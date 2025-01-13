@@ -26,11 +26,12 @@ if (roomId) {
   // Emit join room event
   const participantName = generateRandomName(); // Ensure this function is implemented
   const myPeer = new Peer(roomId, {
-    host: "/",
-    port: 3001,
+    host: "watch-togethertest.onrender.com",
+    port: 443, // Use 443 for secure WebSocket (wss)
     path: '/peerjs',
     secure: true
   });
+
 
   myPeer.on("open", roomId => {
     console.log("befor emit join_room")
@@ -68,7 +69,7 @@ if (roomId) {
 }
 
 function connectToNewUser(participant_name, stream){
-  const call = myPeer.call();
+  const call = myPeer.call(participant_name, stream);
   const video = document.createElement('video');
   call.on("stream", userVideoStream => {
     addVideoStream(video, userVideoStream);
