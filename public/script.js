@@ -130,6 +130,7 @@ async function joinRoom(roomId, participantName) {
 
     if (data.message === "Joined room successfully") {
       socket.emit("join_room", { room_id: roomId, participant_name: participantName });
+      window.location.href = `/${roomId}`;
     }
   } catch (error) {
     console.error("Error joining room:", error);
