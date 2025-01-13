@@ -23,7 +23,14 @@ if (roomId) {
   
   // Emit join room event
   const participantName = generateRandomName(); // Ensure this function is implemented
-  socket.emit("join_room", { room_id: roomId, participant_name: participantName });
+  const myPeer = new Peer(roomId, {
+    host: "/",
+    port: 3001
+  });
+  
+  myPeer.on("open", roomId => {
+    socket.emit("join_room", { room_id: roomId, participant_name: participantName }); 
+  })
 
   // Listen for new user joining the room
   socket.on("user_joined", ({ participant_name }) => {
@@ -33,6 +40,8 @@ if (roomId) {
 
   // Room-specific UI updates
   updateRoomUI(roomId);
+
+
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
 }
