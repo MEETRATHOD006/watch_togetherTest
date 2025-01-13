@@ -22,6 +22,35 @@ createRoomButton.addEventListener("click", () => {
   createRoomPopup.style.display = "block"; // Show the popup
 });
 
+// Room Creation
+async function createRoom() {
+  const roomName = document.getElementById("roomName").value.trim();
+  const adminName = document.getElementById("adminName").value.trim();
+  if (!roomName || !adminName) {
+    alert("Please enter both Room Name and Admin Name.");
+    return;
+  }
+
+  const roomId = generateRoomId();
+
+  try {
+    const response = await fetch("/create_room", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ room_id: roomId, room_name: roomName, admin_name: adminName }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+
+    if (data.message === "Room created successfully") {
+      window.location.href = `/${roomId}`; // Redirect to room
+    }
+  } catch (error) {
+    console.error("Error creating room:", error);
+  }
+}
+
 // Confirm Room Creation
 createRoomConfirmButton.addEventListener("click", createRoom);
 
@@ -86,6 +115,26 @@ closePopupButton.addEventListener("click", () => {
   joinErrorText.style.display = "none";
   joinRoomIdInput.value = "";
 });
+
+// Join Room
+async function joinRoom(roomId, participantName) {
+  try {
+    const response = await fetch("/join_room", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ room_id: roomId, participant_name: participantName }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+
+    if (data.message === "Joined room successfully") {
+      socket.emit("join_room", { room_id: roomId, participant_name: participantName });
+    }
+  } catch (error) {
+    console.error("Error joining room:", error);
+  }
+}
 
 // Handle join room button
 joinRoomButton.addEventListener("click", async () => {
@@ -168,36 +217,6 @@ function copyToClipboard(text) {
     .catch((err) => console.error("Error copying text:", err));
 }
 
-// Create Room
-async function createRoom() {
-  const roomName = document.getElementById("roomName").value.trim();
-  const adminName = document.getElementById("adminName").value.trim();
-  if (!roomName || !adminName) {
-    alert("Please enter both Room Name and Admin Name.");
-    return;
-  }
-
-  const roomId = generateRoomId();
-  try {
-    const response = await fetch("https://watch-togethertest.onrender.com/create_room", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ room_id: roomId, room_name: roomName, admin_name: adminName }),
-    });
-    const data = await response.json();
-    if (data.message === "Room created successfully") {
-      console.log(data);
-      socket.emit("create_room", { room_id: roomId, room_name: roomName, admin_name: adminName });
-      captureLocalVideo();
-      updateUIAfterRoomCreation(roomId);
-      alert("Room created successfully!");
-    } else {
-      alert("Failed to create room: " + data.message);
-    }
-  } catch (error) {
-    console.error("Error creating room:", error);
-  }
-}
 
 // 📌 Generate Random Room ID
 function generateRoomId() {
