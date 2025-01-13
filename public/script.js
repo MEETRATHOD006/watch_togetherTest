@@ -9,6 +9,75 @@ socket.on("connect", () => {
   console.log("Connected to Socket.IO server with ID:", socket.id);
 });
 
+// Function to extract room ID from URL
+function getRoomIdFromURL() {
+  const pathParts = window.location.pathname.split("/");
+  return pathParts.length > 1 && pathParts[1] ? pathParts[1] : null;
+}
+
+// Room-specific functionality
+const roomId = getRoomIdFromURL();
+
+if (roomId) {
+  console.log(`Joined room: ${roomId}`);
+  
+  // Emit join room event
+  const participantName = generateRandomName(); // Ensure this function is implemented
+  socket.emit("join_room", { room_id: roomId, participant_name: participantName });
+
+  // Listen for new user joining the room
+  socket.on("user_joined", ({ participant_name }) => {
+    console.log(`${participant_name} joined room ${roomId}`);
+    displayNotification(`${participant_name} has joined the room.`);
+  });
+
+  // Room-specific UI updates
+  updateRoomUI(roomId);
+} else {
+  console.log("No room detected in the URL. Displaying default interface.");
+}
+
+// Helper: Update room-specific UI
+function updateRoomUI(roomId) {
+  const createJoinBtnDiv = document.querySelector(".creatJoinBtn");
+  createJoinBtnDiv.innerHTML = `
+    <span id="roomIdDisplay">Room ID: ${roomId}</span>
+    <i class="fa-solid fa-copy" id="copyRoomId" style="cursor: pointer; color: yellow;"></i>
+  `;
+
+  // Enable copying Room ID
+  document.getElementById("copyRoomId").addEventListener("click", () => {
+    navigator.clipboard.writeText(roomId).then(() => {
+      const copyMessage = document.createElement("div");
+      copyMessage.textContent = "Room ID copied to clipboard!";
+      copyMessage.style.position = "fixed";
+      copyMessage.style.bottom = "20px";
+      copyMessage.style.right = "20px";
+      copyMessage.style.backgroundColor = "#4CAF50";
+      copyMessage.style.color = "#fff";
+      copyMessage.style.padding = "10px";
+      copyMessage.style.borderRadius = "5px";
+      document.body.appendChild(copyMessage);
+      setTimeout(() => copyMessage.remove(), 3000);
+    });
+  });
+}
+
+// Helper: Display notification
+function displayNotification(message) {
+  const notification = document.createElement("div");
+  notification.textContent = message;
+  notification.style.position = "fixed";
+  notification.style.top = "10px";
+  notification.style.right = "10px";
+  notification.style.backgroundColor = "#f0ad4e";
+  notification.style.color = "#fff";
+  notification.style.padding = "10px";
+  notification.style.borderRadius = "5px";
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+}
+
 
 // Display Local Video
 // 📌 CREATE ROOM EVENT LISTENER
