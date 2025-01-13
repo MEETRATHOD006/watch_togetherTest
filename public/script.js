@@ -68,7 +68,7 @@ function addVideoStream (video, stream) {
   video.play()
   })
   const individualsVideo = document.createElement('div');
-  individualsVideo.addClassList('individualsVideo');
+  individualsVideo.classList.add('individualsVideo');
   videoGrid.append(individualsVideo);
   individualsVideo.append(video);
 }
