@@ -39,18 +39,21 @@ app.post('/create_room', async (req, res) => {
     const result = await pool.query(
       'INSERT INTO rooms (room_id, room_name, admin_name, participants) VALUES ($1, $2, $3, $4) RETURNING *',
       [room_id, room_name, admin_name, JSON.stringify([])]
-      res.(redirect(`/${room_id}`));
     );
+    
     res.status(200).json({ message: 'Room created successfully', data: result.rows[0] });
+    res.redirect(`/${room_id}`);
   } catch (err) {
     console.error('Failed to create room:', err.message);
     res.status(500).json({ error: 'Failed to create room' });
   }
 });
 
+// Route to join a room (HTML view or data)
 app.get('/:room', (req, res) => {
-  res.render('room', {room_id: req.params.room})
-})
+  const roomId = req.params.room;
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.post('/join_room', joinRoom);
 
