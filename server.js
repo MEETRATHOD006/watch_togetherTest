@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const fs = require('fs');
+const https = require('https');
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const { Pool } = require("pg");
@@ -118,8 +120,12 @@ io.on("connection", (socket) => {
 
 // PeerJS server on a different port (default is 9000)
 const peerServer = PeerServer({
-  port: process.env.PEER_PORT || 3001, // Use a different port for PeerJS
+  port: process.env.PEER_PORT || 3001,
   path: '/peerjs',
+  ssl: {
+    key: fs.readFileSync('path/to/your/private.key'), // Replace with your SSL key
+    cert: fs.readFileSync('path/to/your/certificate.crt'), // Replace with your SSL certificate
+  },
 });
 
 server.listen(3000, () => console.log("Server running on port 3000"));
