@@ -61,12 +61,12 @@ app.post("/join_room", async (req, res) => {
     const room = result.rows[0];
     const participants = room.participants;
     participants.push(participant_name);
-
+    console.log("participants.push(participant_name); done");
     await pool.query("UPDATE rooms SET participants = $1 WHERE room_id = $2", [
-      JSON.stringify(participants),
+      participants,
       room_id,
     ]);
-
+    console.log("pool query done");
     res.status(200).json({ message: "Joined room successfully" });
   } catch (err) {
     console.error("Error joining room:", err.message);
