@@ -149,6 +149,9 @@ joinRoomButton.addEventListener("click", async () => {
 
   const participantName = generateRandomName(); // Ensure this function is implemented
   joinErrorText.style.display = "none"; // Clear any previous error message
+  joinRoom(roomId, participantName); // Ensure implementation exists
+  joinPopup.style.display = "none";
+  joinRoomIdInput.value = "";
 
     // if (data.message === "Joined room successfully") {
     //   socket.emit("join_room", { room_id: roomId, participant_name: participantName });
@@ -179,19 +182,6 @@ joinRoomButton.addEventListener("click", async () => {
     //         });
     //       });
 
-          joinRoom(roomId, participantName); // Ensure implementation exists
-          joinPopup.style.display = "none";
-          joinRoomIdInput.value = "";
-      });
-    } else {
-      joinErrorText.textContent = data.message || "Failed to join the room.";
-      joinErrorText.style.display = "block";
-    }
-  } catch (error) {
-    console.error("Error joining room:", error);
-    joinErrorText.textContent = "An error occurred. Please try again.";
-    joinErrorText.style.display = "block";
-  }
 });
 
 
