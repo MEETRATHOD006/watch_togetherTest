@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
-const server = require("http").Server(app);
+// const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const { Pool } = require("pg");
 const path = require("path");
-const { PeerServer } = require('peer-server');
+var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 const pool = new Pool({
   connectionString: 'postgresql://postgres.pezdqmellmcmewcvssbv:8594@aws-0-ap-south-1.pooler.supabase.com:5432/postgres',
@@ -112,6 +112,15 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 });
+
+var options = {
+    debug: true
+}
+
+// create a http server instance to listen to request
+var server = require('http').createServer(app);
+
+app.use('/peerjs', ExpressPeerServer(server, options));
 
 // PeerJS server on a different port (default is 9000)
 const peerServer = PeerServer({
