@@ -85,9 +85,8 @@ app.get("/:room", async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).send("Room not found.");
     }
-    console.log("its working");
+    
     res.sendFile(path.join(__dirname, "public", "index.html"));
-    console.log("its working too");
   } catch (err) {
     console.error("Failed to load room:", err.message);
     res.status(500).send("Internal server error.");
@@ -103,9 +102,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join_room", ({ room_id, participant_name }) => {
+    console.log("i am here to join_room");
     socket.join(room_id);
+    console.log("socket.join(room_id); done");
     io.to(room_id).emit("user_joined", { participant_name });
+    console.log("io.to(room_id).emit done");
     console.log(`User ${participant_name} joined room ${room_id}`);
+    console.log("done dana done");
   });
 
   socket.on("disconnect", () => {
