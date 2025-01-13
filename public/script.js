@@ -22,18 +22,13 @@ if (roomId) {
   console.log(`Joined room: ${roomId}`);
   
   // Emit join room event
-  // const participantName = generateRandomName(); // Ensure this function is implemented
-  // const myPeer = new Peer(roomId, {
-  //   host: "/",
-  //   port: 3001
-  // });
+  const participantName = generateRandomName(); // Ensure this function is implemented
+  const myPeer = new Peer(roomId, {
+    host: "/",
+    port: 3001
+  });
 
-  var peer = new Peer({
-    host: '/',
-    port: 3001,
-});
-  
-  peer.on("open", roomId => {
+  myPeer.on("open", roomId => {
     socket.emit("join_room", { room_id: roomId, participant_name: participantName }); 
   })
 
