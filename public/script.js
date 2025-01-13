@@ -22,13 +22,43 @@ if (roomId) {
   console.log(`Joined room: ${roomId}`);
   
   // Emit join room event
-  const participantName = generateRandomName(); // Ensure this function is implemented
-  const myPeer = new Peer(roomId, {
-    host: "/",
-    port: 3001
-  });
+  // const participantName = generateRandomName(); // Ensure this function is implemented
+  // const myPeer = new Peer(roomId, {
+  //   host: "/",
+  //   port: 3001
+  // });
+
+  var peer = new Peer({
+    host: '/',
+    port: 8878,
+    path: '/peerjs',
+    config: { 'iceServers': [
+    { url: 'stun:stun01.sipphone.com' },
+    { url: 'stun:stun.ekiga.net' },
+{ url: 'stun:stunserver.org' },
+{ url: 'stun:stun.softjoys.com' },
+{ url: 'stun:stun.voiparound.com' },
+{ url: 'stun:stun.voipbuster.com' },
+{ url: 'stun:stun.voipstunt.com' },
+{ url: 'stun:stun.voxgratia.org' },
+{ url: 'stun:stun.xten.com' },
+{
+    url: 'turn:192.158.29.39:3478?transport=udp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+},
+{
+    url: 'turn:192.158.29.39:3478?transport=tcp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+    }
+  ]
+   },
+
+debug: 3
+});
   
-  myPeer.on("open", roomId => {
+  peer.on("open", roomId => {
     socket.emit("join_room", { room_id: roomId, participant_name: participantName }); 
   })
 
