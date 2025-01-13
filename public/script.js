@@ -182,10 +182,6 @@ joinRoomButton.addEventListener("click", async () => {
           joinRoom(roomId, participantName); // Ensure implementation exists
           joinPopup.style.display = "none";
           joinRoomIdInput.value = "";
-        } else {
-          joinErrorText.textContent = serverResponse.error || "Failed to join the room.";
-          joinErrorText.style.display = "block";
-        }
       });
     } else {
       joinErrorText.textContent = data.message || "Failed to join the room.";
