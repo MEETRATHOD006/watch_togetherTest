@@ -9,6 +9,8 @@ socket.on("connect", () => {
   console.log("Connected to Socket.IO server with ID:", socket.id);
 });
 
+const videoGrid = document.getElementById("displayvideocalls");
+
 // Function to extract room ID from URL
 function getRoomIdFromURL() {
   const pathParts = window.location.pathname.split("/");
@@ -45,10 +47,30 @@ if (roomId) {
 
   // Room-specific UI updates
   updateRoomUI(roomId);
+  const myVideo = document.createElement('video');
+  myVideo.muted = true;
+
+  navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  }).then(stream => {
+    addVideoStream(myVideo, stream)
+  })
 
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
+}
+
+function addVideoStream (video, stream) {
+  video.srcObject = stream
+  video.addEventListener('loadedmetadata', () => {
+  video.play()
+  })
+  const individualsVideo = document.createElements('div');
+  individualsVideo.addClassList('individualsVideo');
+  videoGrid.append(individualsVideo);
+  individualsVideo.append(video);
 }
 
 // Helper: Update room-specific UI
