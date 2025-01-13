@@ -50,12 +50,14 @@ app.post("/join_room", async (req, res) => {
   }
 
   try {
+    // Check if room exists
     const result = await pool.query("SELECT * FROM rooms WHERE room_id = $1", [room_id]);
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Room not found" });
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Room not found" });
     }
 
-    // Add participant to the room
+    // Update participants
     const room = result.rows[0];
     const participants = JSON.parse(room.participants);
     participants.push(participant_name);
@@ -67,10 +69,11 @@ app.post("/join_room", async (req, res) => {
 
     res.status(200).json({ message: "Joined room successfully" });
   } catch (err) {
-    console.error("Failed to join room:", err.message);
+    console.error("Error joining room:", err.message);
     res.status(500).json({ error: "Failed to join room" });
   }
 });
+
 
 // Handle Room Routes
 app.get("/:room", async (req, res) => {
