@@ -102,7 +102,7 @@ io.on("connection", (socket) => {
 
   socket.on("join_room", ({ room_id, participant_name }) => {
     socket.join(room_id);
-    io.to(room_id).broadcast.emit("user_joined", { participant_name });
+    io.to(room_id).emit("user_joined", { participant_name });
     console.log(`User ${participant_name} joined room ${room_id}`);
   });
 
