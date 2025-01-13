@@ -38,12 +38,7 @@ if (roomId) {
     console.log("after emit room_join")
   })
 
-  // Listen for new user joining the room
-    socket.on("user_joined", ({ participant_name }) => {
-      console.log("inside user joined")
-      console.log(`${participant_name} joined room ${roomId}`);
-      displayNotification(`${participant_name} has joined the room.`);
-    });
+  
 
   // Room-specific UI updates
   updateRoomUI(roomId);
@@ -55,11 +50,32 @@ if (roomId) {
     audio: true
   }).then(stream => {
     addVideoStream(myVideo, stream)
+
+    myPeer.on('call', call => {
+      call.answer(stream)
+    })
+    
+    // Listen for new user joining the room
+    socket.on("user_joined", ({ participant_name }) => {
+      connectToNewUser(participant_name, stream)
+      displayNotification(`${participant_name} has joined the room.`);
+    });
   })
 
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
+}
+
+function connectToNewUser(participant_name, stream){
+  const call = myPeer.call();
+  const video = document.createElement('video');
+  call.on("stream", userVideoStream => {
+    addVideoStream(video, userVideoStream);
+  })
+  call.on('close', () => {
+    video.remove()
+  })
 }
 
 function addVideoStream (video, stream) {
