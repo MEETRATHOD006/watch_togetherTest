@@ -32,13 +32,13 @@ if (roomId) {
 
   myPeer.on("open", roomId => {
     socket.emit("join_room", { room_id: roomId, participant_name: participantName }); 
+  // Listen for new user joining the room
+    socket.on("user_joined", ({ participant_name }) => {
+      console.log(`${participant_name} joined room ${roomId}`);
+      displayNotification(`${participant_name} has joined the room.`);
+    });
   })
 
-  // Listen for new user joining the room
-  socket.on("user_joined", ({ participant_name }) => {
-    console.log(`${participant_name} joined room ${roomId}`);
-    displayNotification(`${participant_name} has joined the room.`);
-  });
 
   // Room-specific UI updates
   updateRoomUI(roomId);
