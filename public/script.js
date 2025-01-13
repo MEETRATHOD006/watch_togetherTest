@@ -67,7 +67,7 @@ function addVideoStream (video, stream) {
   video.addEventListener('loadedmetadata', () => {
   video.play()
   })
-  const individualsVideo = document.createElements('div');
+  const individualsVideo = document.createElement('div');
   individualsVideo.addClassList('individualsVideo');
   videoGrid.append(individualsVideo);
   individualsVideo.append(video);
