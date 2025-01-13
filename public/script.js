@@ -1,6 +1,6 @@
 // Import Socket.IO client
 const socket = io("https://watch-togethertest.onrender.com"); // Update the URL as per your server
-import { Peer } from "peerjs"
+const { Peer } = require('peerjs-on-node');
 const peer = new Peer();
 
 const peers = {}; // Store peer connections
