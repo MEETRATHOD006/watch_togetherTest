@@ -115,9 +115,8 @@ io.on("connection", (socket) => {
 
 // PeerJS server on a different port (default is 9000)
 const peerServer = PeerServer({
-  port: 3001,
-  path: "/",  // Optional: you can customize the path
-  debug: true,     // Optional: Enable debug mode
+  port: process.env.PEER_PORT || 3001, // Use a different port for PeerJS
+  path: '/peerjs',
 });
 
 server.listen(3000, () => console.log("Server running on port 3000"));
