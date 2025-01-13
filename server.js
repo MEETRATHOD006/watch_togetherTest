@@ -44,40 +44,30 @@ app.post("/create_room", async (req, res) => {
 // Join Room
 app.post("/join_room", async (req, res) => {
   const { room_id, participant_name } = req.body;
-  console.log("re.body done");
+  
   if (!room_id || !participant_name) {
     return res.status(400).json({ error: "Missing required fields" });
   }
-  console.log("if condition done");
+  
   try {
     // Check if room exists
     const result = await pool.query("SELECT * FROM rooms WHERE room_id = $1", [room_id]);
-    console.log("room check query done");
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Room not found" });
     }
-    console.log("room check if statement done");
 
     // Update participants
     const room = result.rows[0];
-    console.log("resule.rows[0] done");
-    console.log(room);
-    console.log(room.participants);
-    console.log(JSON.parse(room.participants));
-    const participants = JSON.parse(room.participants);
-    console.log("const participants = JSON.parse(room.participants); done");
+    const participants = room.participants;
     participants.push(participant_name);
-    console.log("participants.push(participant_name); done");
 
     await pool.query("UPDATE rooms SET participants = $1 WHERE room_id = $2", [
       JSON.stringify(participants),
       room_id,
     ]);
-    console.log("pool query done");
 
     res.status(200).json({ message: "Joined room successfully" });
-    console.log("room  joined successfully done");
   } catch (err) {
     console.error("Error joining room:", err.message);
     res.status(500).json({ error: "Failed to join room" });
