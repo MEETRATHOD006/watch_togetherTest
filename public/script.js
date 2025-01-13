@@ -185,6 +185,9 @@ joinRoomButton.addEventListener("click", async () => {
 
 });
 
+socket.on("user_joined", participantName => {
+  console.log("user connected", participantName)
+});
 
 // 📌 Utility Function: Copy to Clipboard
 function copyToClipboard(text) {
