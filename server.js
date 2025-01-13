@@ -84,8 +84,9 @@ app.get("/:room", async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).send("Room not found.");
     }
-
+    console.log("its working");
     res.sendFile(path.join(__dirname, "public", "index.html"));
+    console.log("its working too");
   } catch (err) {
     console.error("Failed to load room:", err.message);
     res.status(500).send("Internal server error.");
