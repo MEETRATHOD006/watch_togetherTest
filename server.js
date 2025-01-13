@@ -63,7 +63,7 @@ app.post("/join_room", async (req, res) => {
     participants.push(participant_name);
     
     await pool.query("UPDATE rooms SET participants = $1 WHERE room_id = $2", [
-      JSON.parse(participants),
+      JSON.stringify(participants),
       room_id,
     ]);
     console.log("pool query done");
