@@ -31,9 +31,12 @@ if (roomId) {
   });
 
   myPeer.on("open", roomId => {
-    socket.emit("join_room", { room_id: roomId, participant_name: participantName }); 
+    console.log("befor emit join_room")
+    socket.emit("join_room", { room_id: roomId, participant_name: participantName });
+    console.log("after emit room_join")
   // Listen for new user joining the room
     socket.on("user_joined", ({ participant_name }) => {
+      console.log("inside user joined")
       console.log(`${participant_name} joined room ${roomId}`);
       displayNotification(`${participant_name} has joined the room.`);
     });
