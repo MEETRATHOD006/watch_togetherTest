@@ -62,6 +62,9 @@ app.post("/join_room", async (req, res) => {
     // Update participants
     const room = result.rows[0];
     console.log("resule.rows[0] done");
+    console.log(room);
+    console.log(room.participants);
+    console.log(JSON.parse(room.participants));
     const participants = JSON.parse(room.participants);
     console.log("const participants = JSON.parse(room.participants); done");
     participants.push(participant_name);
