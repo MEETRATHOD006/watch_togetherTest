@@ -4,7 +4,7 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const { Pool } = require("pg");
 const path = require("path");
-const PeerServer = require('peerjs').PeerServer;
+const { PeerServer } = require('peer-server');
 
 const pool = new Pool({
   connectionString: 'postgresql://postgres.pezdqmellmcmewcvssbv:8594@aws-0-ap-south-1.pooler.supabase.com:5432/postgres',
