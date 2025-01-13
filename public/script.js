@@ -1,5 +1,5 @@
 // Import Socket.IO client
-const socket = io("https://watch-togetherexpress.onrender.com"); // Update the URL as per your server
+const socket = io("https://watch-togethertest.onrender.com"); // Update the URL as per your server
 import Peer from "peerjs";
 const peer = new Peer();
 
@@ -147,7 +147,7 @@ joinRoomButton.addEventListener("click", async () => {
   joinErrorText.style.display = "none"; // Clear any previous error message
 
   try {
-    const response = await fetch("https://watch-togetherexpress.onrender.com/join_room", {
+    const response = await fetch("https://watch-togethertest.onrender.com/join_room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ room_id: roomId, participant_name: participantName }),
@@ -288,7 +288,7 @@ async function createRoom() {
 
   const roomId = generateRoomId();
   try {
-    const response = await fetch("https://watch-togetherexpress.onrender.com/create_room", {
+    const response = await fetch("https://watch-togethertest.onrender.com/create_room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ room_id: roomId, room_name: roomName, admin_name: adminName }),
