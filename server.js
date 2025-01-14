@@ -105,7 +105,7 @@ io.on("connection", (socket) => {
     console.log("i am here to join_room");
     socket.join(roomId);
     console.log("socket.join(room_id); done");
-    io.to(room_id).emit('user-connected', userId);
+    io.to(roomId).emit('user-connected', userId);
     console.log("socket.to(room_id).emit done");
     console.log(`User ${userId} joined room ${roomId}`);
     console.log("done dana done");
