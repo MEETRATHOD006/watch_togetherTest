@@ -103,13 +103,13 @@ io.on("connection", (socket) => {
     socket.join(data.room_id);
   });
 
-  socket.on("join_room", ({ room_id, participant_name }) => {
+  socket.on("join-room", (roomId, userId) => {
     console.log("i am here to join_room");
-    socket.join(room_id);
+    socket.join(roomId);
     console.log("socket.join(room_id); done");
-    io.to(room_id).emit("user-joined", { participant_name });
+    io.to(room_id).emit('user-connected', userId);
     console.log("socket.to(room_id).emit done");
-    console.log(`User ${participant_name} joined room ${room_id}`);
+    console.log(`User ${userId} joined room ${roomId}`);
     console.log("done dana done");
   });
 
