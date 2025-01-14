@@ -26,8 +26,10 @@ if (roomId) {
   // Emit join room event
   const participantName = generateRandomName(); // Ensure this function is implemented
   const myPeer = new Peer(undefined, {
-    host: "/",
-    port: '3001', // Use 443 for secure WebSocket (wss)
+    host: 'watch-togethertest.onrender.com',
+    secure: true,
+    port: 443,
+    path: '/',
   });
 
 
