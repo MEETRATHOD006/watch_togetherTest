@@ -360,4 +360,46 @@ function generateRandomName() {
   }`;
 }
 
+const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
+const searchbar = document.getElementById('searchbar');
+const suggestions = document.getElementById('suggestions');
 
+// Function to fetch suggestions from YouTube API
+async function fetchSuggestions(query) {
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(
+    query
+  )}&type=video&key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.items;
+}
+
+// Display suggestions below the search bar
+function displaySuggestions(items) {
+  suggestions.innerHTML = '';
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item.snippet.title;
+    li.setAttribute('data-video-id', item.id.videoId);
+    li.addEventListener('click', () => loadVideo(item.id.videoId));
+    suggestions.appendChild(li);
+  });
+}
+
+// Load video in the player
+function loadVideo(videoId) {
+  const videoPlayer = document.getElementById('videoPlayer');
+  videoPlayer.src = `https://www.youtube.com/embed/${videoId}`;
+  suggestions.innerHTML = ''; // Clear suggestions after selection
+}
+
+// Event listener for the search bar
+searchbar.addEventListener('input', async (e) => {
+  const query = e.target.value.trim();
+  if (query.length > 0) {
+    const results = await fetchSuggestions(query);
+    displaySuggestions(results);
+  } else {
+    suggestions.innerHTML = ''; // Clear suggestions when the input is empty
+  }
+});
