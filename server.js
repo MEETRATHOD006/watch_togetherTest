@@ -118,8 +118,7 @@ io.on("connection", (socket) => {
 
 // PeerJS server on a different port (default is 9000)
 const peerServer = PeerServer({
-  port: process.env.PEER_PORT || 3001,
-  path: '/peerjs',
+  port: 3001
 });
 
 peerServer.listen(() => console.log(`Peer server running on port 3001`))
