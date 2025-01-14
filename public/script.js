@@ -100,7 +100,7 @@ if (roomId) {
     console.log(peers);
   }
   
-  function addVideoStream(video, stream) {
+  function addVideoStream(video, stream, userId) {
   video.srcObject = stream;
   video.addEventListener('loadedmetadata', () => {
     video.play();
