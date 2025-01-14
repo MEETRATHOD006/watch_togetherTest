@@ -63,32 +63,32 @@ if (roomId) {
     });
   })
 
+  function connectToNewUser(userId, stream){
+    const call = myPeer.call(userId, stream);
+    const video = document.createElement('video');
+    call.on("stream", userVideoStream => {
+      addVideoStream(video, userVideoStream);
+    })
+    call.on('close', () => {
+      video.remove()
+    })
+  }
+  
+  function addVideoStream (video, stream) {
+    video.srcObject = stream
+    video.addEventListener('loadedmetadata', () => {
+    video.play()
+    })
+    const individualsVideo = document.createElement('div');
+    individualsVideo.classList.add('individualsVideo');
+    videoGrid.append(individualsVideo);
+    individualsVideo.append(video);
+  }
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
 }
 
-function connectToNewUser(userId, stream){
-  const call = myPeer.call(userId, stream);
-  const video = document.createElement('video');
-  call.on("stream", userVideoStream => {
-    addVideoStream(video, userVideoStream);
-  })
-  call.on('close', () => {
-    video.remove()
-  })
-}
-
-function addVideoStream (video, stream) {
-  video.srcObject = stream
-  video.addEventListener('loadedmetadata', () => {
-  video.play()
-  })
-  const individualsVideo = document.createElement('div');
-  individualsVideo.classList.add('individualsVideo');
-  videoGrid.append(individualsVideo);
-  individualsVideo.append(video);
-}
 
 // Helper: Update room-specific UI
 function updateRoomUI(roomId) {
