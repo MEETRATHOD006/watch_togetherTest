@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
 // PeerJS server on a different port (default is 9000)
 const peerServer = PeerServer({
   port: process.env.PORT || 443, // Use Render's dynamic port
-  path: '/',
+  path: '/peerjs',
 });
 
 peerServer.listen(() => console.log(`Peer server running on port 443`))
