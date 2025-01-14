@@ -68,7 +68,11 @@ if (roomId) {
   })
 
   socket.on('user-disconnected', userId => {
-    if (peers[userId]) peers[userId].close()
+    console.log("User disconnected:", { roomId, userId }); // Debugging
+    if (peers[userId]) {
+      peers[userId].close();
+      displayNotification(`${userId} has left the room.`);
+    }
   })
 
   function connectToNewUser(userId, stream){
