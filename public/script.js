@@ -26,7 +26,7 @@ if (roomId) {
   // Emit join room event
   const participantName = generateRandomName(); // Ensure this function is implemented
   const myPeer = new Peer(undefined, {
-    host: 'watch-togethertest.onrender.com',
+    host: 'peerjs-server-gdyx.onrender.com',
     secure: true,
     port: 443,
     path: '/peerjs',
