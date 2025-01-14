@@ -67,7 +67,7 @@ if (roomId) {
     });
   })
 
-  socket.on('user-disconnected', (roomId, userId) => {
+  socket.on('user-disconnected', userId => {
     if (peers[userId]) peers[userId].close()
   })
 
