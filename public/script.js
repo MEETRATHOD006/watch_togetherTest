@@ -54,6 +54,10 @@ if (roomId) {
 
     myPeer.on('call', call => {
       call.answer(stream)
+      const video = document.createElement('video')
+      call.on('stream', userVideoStream => {
+        addVideoStream (video, userVideoStream)
+      })
     })
     
     // Listen for new user joining the room
@@ -61,6 +65,10 @@ if (roomId) {
       connectToNewUser(userId, stream)
       displayNotification(`${userId} has joined the room.`);
     });
+  })
+
+  socket.on('user-disconnected', userId => {
+    if (peers[userId]) peers[userId].close()
   })
 
   function connectToNewUser(userId, stream){
@@ -72,6 +80,8 @@ if (roomId) {
     call.on('close', () => {
       video.remove()
     })
+
+    peers[userId] = call
   }
   
   function addVideoStream (video, stream) {
