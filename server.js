@@ -116,11 +116,5 @@ io.on("connection", (socket) => {
   });
 });
 
-// PeerJS server on a different port (default is 9000)
-const peerServer = PeerServer({
-  port: process.env.PORT || 443, // Use Render's dynamic port
-  path: '/peerjs',
-});
-
 
 server.listen(3000, () => console.log("Server running on port 3000"));
