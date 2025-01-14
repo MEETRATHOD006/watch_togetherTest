@@ -61,7 +61,7 @@ if (roomId) {
     })
     
     // Listen for new user joining the room
-    socket.on("user-connected", (roomId, userId) => {
+    socket.on("user-connected", userId => {
       connectToNewUser(userId, stream)
       displayNotification(`${userId} has joined the room.`);
     });
