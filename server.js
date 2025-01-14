@@ -122,6 +122,6 @@ const peerServer = PeerServer({
   path: '/',
 });
 
-// peerServer.listen(() => console.log(`Peer server running on port 3001`))
+peerServer.listen(() => console.log(`Peer server running on port 443`))
 
 server.listen(3000, () => console.log("Server running on port 3000"));
