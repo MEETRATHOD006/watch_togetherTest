@@ -111,7 +111,7 @@ io.on("connection", (socket) => {
     console.log("done dana done");
   });
 
-  socket.on("disconnect", (roomId, userI)d => {
+  socket.on("disconnect", (roomId, userId) => {
     io.to(roomId).emit('user-disconnected', userId)
     console.log("User disconnected:", socket.id);
   });
