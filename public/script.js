@@ -73,6 +73,11 @@ if (roomId) {
     console.log("User disconnected:", { roomId, userId }); // Debugging
     if (peers[userId]) {
       peers[userId].close();
+      delete peers[userId];
+    }
+    const individualsVideo = document.querySelector(`.individualsVideo[data-user-id="${userId}"]`);
+    if (individualsVideo) {
+      individualsVideo.remove();
       displayNotification(`${userId} has left the room.`);
     }
   })
@@ -81,9 +86,13 @@ if (roomId) {
     const call = myPeer.call(userId, stream);
     const video = document.createElement('video');
     call.on("stream", userVideoStream => {
-      addVideoStream(video, userVideoStream);
+      addVideoStream(video, userVideoStream, userId);
     })
     call.on('close', () => {
+       const individualsVideo = document.querySelector(`.individualsVideo[data-user-id="${userId}"]`);
+      if (individualsVideo) {
+        individualsVideo.remove();
+      }
       video.remove()
     })
 
@@ -101,6 +110,7 @@ if (roomId) {
   if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
     const individualsVideo = document.createElement('div');
     individualsVideo.classList.add('individualsVideo');
+    individualsVideo.setAttribute("data-user-id", userId);
     videoGrid.append(individualsVideo);
     individualsVideo.append(video);
   }
