@@ -89,16 +89,20 @@ if (roomId) {
     console.log(peers);
   }
   
-  function addVideoStream (video, stream) {
-    video.srcObject = stream
+  function addVideoStream(video, stream) {
+  video.srcObject = stream;
+  video.addEventListener('loadedmetadata', () => {
+    video.play();
+  });
+
+  // Check if the video is already added to avoid duplicates
+  if (!videoGrid.contains(video)) {
     const individualsVideo = document.createElement('div');
     individualsVideo.classList.add('individualsVideo');
     videoGrid.append(individualsVideo);
     individualsVideo.append(video);
-    video.addEventListener('loadedmetadata', () => {
-    video.play()
-    })
   }
+}
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
