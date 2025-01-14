@@ -57,8 +57,8 @@ if (roomId) {
     })
     
     // Listen for new user joining the room
-    socket.on("user-joined", ({ participant_name }) => {
-      connectToNewUser(participant_name, stream)
+    socket.on("user-connected", userId => {
+      connectToNewUser(userId, stream)
       displayNotification(`${participant_name} has joined the room.`);
     });
   })
@@ -68,8 +68,8 @@ if (roomId) {
   console.log("No room detected in the URL. Displaying default interface.");
 }
 
-function connectToNewUser(participant_name, stream){
-  const call = myPeer.call(participant_name, stream);
+function connectToNewUser(userId, stream){
+  const call = myPeer.call(userId, stream);
   const video = document.createElement('video');
   call.on("stream", userVideoStream => {
     addVideoStream(video, userVideoStream);
