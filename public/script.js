@@ -76,13 +76,13 @@ if (roomId) {
   
   function addVideoStream (video, stream) {
     video.srcObject = stream
-    video.addEventListener('loadedmetadata', () => {
-    video.play()
-    })
     const individualsVideo = document.createElement('div');
     individualsVideo.classList.add('individualsVideo');
     videoGrid.append(individualsVideo);
     individualsVideo.append(video);
+    video.addEventListener('loadedmetadata', () => {
+    video.play()
+    })
   }
 
 } else {
