@@ -67,7 +67,7 @@ if (roomId) {
     });
   })
 
-  socket.on('user-disconnected', userId => {
+  socket.on('user-disconnected', roomId, userId => {
     if (peers[userId]) peers[userId].close()
   })
 
@@ -82,6 +82,7 @@ if (roomId) {
     })
 
     peers[userId] = call
+    console.log(peers);
   }
   
   function addVideoStream (video, stream) {
