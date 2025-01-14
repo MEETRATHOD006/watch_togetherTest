@@ -122,4 +122,6 @@ const peerServer = PeerServer({
   path: '/peerjs',
 });
 
+peerServer.listen(port, () => console.log(`Peer server running on port ${prot}`))
+
 server.listen(3000, () => console.log("Server running on port 3000"));
