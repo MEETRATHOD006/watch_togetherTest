@@ -95,8 +95,8 @@ if (roomId) {
     video.play();
   });
 
-  // Check if the video is already added to avoid duplicates
-  if (!videoGrid.contains(video)) {
+  // Check if the video already exists in the videoGrid to avoid duplicates and empty divs
+  if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
     const individualsVideo = document.createElement('div');
     individualsVideo.classList.add('individualsVideo');
     videoGrid.append(individualsVideo);
