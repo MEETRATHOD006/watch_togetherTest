@@ -109,11 +109,11 @@ io.on("connection", (socket) => {
     console.log("socket.to(room_id).emit done");
     console.log(`User ${userId} joined room ${roomId}`);
     console.log("done dana done");
-  });
-
-  socket.on("disconnect", () => {
-    io.to(roomId).emit('user-disconnected', userId)
-    console.log("User disconnected:", socket.id);
+    
+    socket.on("disconnect", () => {
+      io.to(roomId).emit('user-disconnected', userId)
+      console.log("User disconnected:", socket.id);
+    });
   });
 });
 
