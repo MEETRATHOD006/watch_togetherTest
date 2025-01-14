@@ -29,7 +29,7 @@ if (roomId) {
     host: 'watch-togethertest.onrender.com',
     secure: true,
     port: 443,
-    path: '/',
+    path: '/peerjs',
   });
 
 
