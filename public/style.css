@@ -229,6 +229,31 @@ header {
     font-size: 15px;
 }
 
+#suggestions {
+  list-style-type: none;
+  width: 96%;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(24 30 40);
+  color: white;
+  border: 1px solid grey;
+  border-radius: 5px;
+  position: absolute;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+#suggestions li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#suggestions li:hover {
+  background-color: rgb(30 39 51);
+}
+
+
 /* h1 {
     margin-top: 20px;
 }
