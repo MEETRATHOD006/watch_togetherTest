@@ -10,6 +10,8 @@ socket.on("connect", () => {
 });
 
 const videoGrid = document.getElementById("displayvideocalls");
+const searchbar = document.getElementById('searchbar');
+searchbar.disabled = true; 
 
 // Function to extract room ID from URL
 function getRoomIdFromURL() {
@@ -22,6 +24,8 @@ const roomId = getRoomIdFromURL();
 
 if (roomId) {
   console.log(`Joined room: ${roomId}`);
+  searchbar.disabled = false; 
+
   
   // Emit join room event
   const participantName = generateRandomName(); // Ensure this function is implemented
@@ -361,7 +365,6 @@ function generateRandomName() {
 }
 
 const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
-const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
 
 // Function to fetch suggestions from YouTube API
