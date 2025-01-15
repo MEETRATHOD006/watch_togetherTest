@@ -119,7 +119,8 @@ if (roomId) {
       individualsVideo.append(video);
     }
   }
-
+    const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
+    const suggestions = document.getElementById('suggestions');
     // Event listener for the search bar
     searchbar.addEventListener('input', async (e) => {
       const query = e.target.value.trim();
@@ -375,8 +376,7 @@ function generateRandomName() {
   }`;
 }
 
-const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
-const suggestions = document.getElementById('suggestions');
+
 
 // Function to fetch suggestions from YouTube API
 async function fetchSuggestions(query) {
