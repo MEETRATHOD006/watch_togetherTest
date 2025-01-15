@@ -11,7 +11,7 @@ socket.on("connect", () => {
 
 const videoGrid = document.getElementById("displayvideocalls");
 const searchbar = document.getElementById('searchbar');
-const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
+const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const suggestions = document.getElementById('suggestions');
 searchbar.disabled = true; 
 
