@@ -11,6 +11,8 @@ socket.on("connect", () => {
 
 const videoGrid = document.getElementById("displayvideocalls");
 const searchbar = document.getElementById('searchbar');
+const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
+const suggestions = document.getElementById('suggestions');
 searchbar.disabled = true; 
 
 // Function to extract room ID from URL
@@ -119,8 +121,6 @@ if (roomId) {
       individualsVideo.append(video);
     }
   }
-    const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
-    const suggestions = document.getElementById('suggestions');
     // Event listener for the search bar
     searchbar.addEventListener('input', async (e) => {
       const query = e.target.value.trim();
