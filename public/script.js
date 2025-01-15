@@ -110,15 +110,26 @@ if (roomId) {
     video.play();
   });
 
-  // Check if the video already exists in the videoGrid to avoid duplicates and empty divs
-  if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
-    const individualsVideo = document.createElement('div');
-    individualsVideo.classList.add('individualsVideo');
-    individualsVideo.setAttribute("data-user-id", userId);
-    videoGrid.append(individualsVideo);
-    individualsVideo.append(video);
+    // Check if the video already exists in the videoGrid to avoid duplicates and empty divs
+    if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
+      const individualsVideo = document.createElement('div');
+      individualsVideo.classList.add('individualsVideo');
+      individualsVideo.setAttribute("data-user-id", userId);
+      videoGrid.append(individualsVideo);
+      individualsVideo.append(video);
+    }
   }
-}
+
+    // Event listener for the search bar
+    searchbar.addEventListener('input', async (e) => {
+      const query = e.target.value.trim();
+      if (query.length > 0) {
+        const results = await fetchSuggestions(query);
+        displaySuggestions(results);
+      } else {
+        suggestions.innerHTML = ''; // Clear suggestions when the input is empty
+      }
+    });
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -405,13 +416,4 @@ function loadVideo(videoId) {
   suggestions.innerHTML = ''; // Clear suggestions after selection
 }
 
-// Event listener for the search bar
-searchbar.addEventListener('input', async (e) => {
-  const query = e.target.value.trim();
-  if (query.length > 0) {
-    const results = await fetchSuggestions(query);
-    displaySuggestions(results);
-  } else {
-    suggestions.innerHTML = ''; // Clear suggestions when the input is empty
-  }
-});
+
