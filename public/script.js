@@ -360,17 +360,19 @@ function generateRandomName() {
   }`;
 }
 
-const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
+const apiKey = 'AIzaSyDeXkxjPlCTNnqg-Ix3EX4HJ5ptYVtbhrI';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
 
 // Function to fetch suggestions from YouTube API
 async function fetchSuggestions(query) {
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(
     query
   )}&type=video&key=${apiKey}`;
   const response = await fetch(url);
+  console.log(response);
   const data = await response.json();
+  console.log(data);
   return data.items;
 }
 
@@ -379,14 +381,21 @@ function displaySuggestions(items) {
   suggestions.innerHTML = '';
   items.forEach(item => {
     const li = document.createElement('li');
-    li.textContent = item.snippet.title;
+    const videoThumbnail = document.createElement('img');
+    videoThumbnail.src = `${item.snippet.thumbnails.medium.url}`;
+    const videoTitle = document.createElement(`div`);
+    videoTitle.classList.add("video-title");
+    videoTitle.textContent = item.snippet.title;
+    li.appendChild(videoThumbnail);
+    li.appendChild(videoTitle);
+    // li.textContent = item.snippet.title;
     li.setAttribute('data-video-id', item.id.videoId);
     li.addEventListener('click', () => loadVideo(item.id.videoId));
     suggestions.appendChild(li);
   });
 }
 
-// Load video in the player
+// Load YouTube video in the iframe
 function loadVideo(videoId) {
   const videoPlayer = document.getElementById('videoPlayer');
   videoPlayer.src = `https://www.youtube.com/embed/${videoId}`;
