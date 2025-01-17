@@ -10,9 +10,11 @@ socket.on("connect", () => {
 });
 
 const videoGrid = document.getElementById("displayvideocalls");
-const searchbar = document.getElementById('searchbar');
+
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
+const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
+let player; let isPlaying;
 searchbar.disabled = true; 
 
 // Function to extract room ID from URL
@@ -410,10 +412,179 @@ function displaySuggestions(items) {
 }
 
 // Load YouTube video in the iframe
+const videoPlayer = document.getElementById('videoPlayer');
+const videoBar = document.getElementById('videoBar');
+const playPauseIcon = document.getElementById('playPauseIcon');
+const fullScreenBtn = document.getElementById('fullScreen');
+const videoContainer = document.getElementById('video-container');
+const videoPlayerContainer = document.getElementById('videoPlayer').parentElement;
+const overlay = document.createElement('div'); // Create an overlay to intercept clicks
+
 function loadVideo(videoId) {
-  const videoPlayer = document.getElementById('videoPlayer');
-  videoPlayer.src = `https://www.youtube.com/embed/${videoId}`;
-  suggestions.innerHTML = ''; // Clear suggestions after selection
+  const volumeBar = document.getElementById('volumeBar');
+  overlay.style.position = 'absolute';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.zIndex = '10'; // Ensure it's above the video
+  overlay.style.background = 'transparent'; // Fully transparent overlay
+  videoContainer.appendChild(overlay); // Add the overlay to the video container
+
+
+  // videoPlayer.document.close();
+  if (player){
+    player.g = null;
+  }
+  videoPlayer.src = `about:blank`;
+  videoPlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
+  let manualPause = false;
+  let isPlaying = true;
+  suggestions.innerHTML = '';
+  let isUserInteracting = false; // Track if the user is interacting with the videoBar
+  let syncInterval; // To store the interval ID
+
+  // Initialize the YouTube Player API
+  player = new YT.Player(videoPlayer, {
+    videoId: videoId,
+    events: {
+      onReady: (event) => {
+        // Start playing the video when ready
+        event.target.playVideo();
+        
+        // Sync the videoBar with the video's progress
+        const duration = event.target.getDuration();
+        videoBar.max = duration;
+        
+        // Set the initial volume to 50%
+        player.setVolume(50);
+        volumeBar.value = 50; // Sync the volume bar with the initial volume
+        
+        // Populate speed menu once the video is ready
+        populatePlaybackSpeedMenu();
+        syncInterval = setInterval(() => {
+          if (!isUserInteracting && player && typeof player.getCurrentTime === 'function') {
+            const currentTime = player.getCurrentTime();
+            videoBar.value = currentTime;
+          }
+        }, 500); // Update every 500ms
+      },
+      onStateChange: (event) => {
+        
+        if (event.data === YT.PlayerState.PAUSED && !manualPause) {
+          player.playVideo();
+        }
+
+        if (event.data === YT.PlayerState.ENDED) {
+          clearInterval(syncInterval); // Stop syncing when the video ends
+        }
+      },
+    },
+  });
+
+  // Add event listener to the full screen button
+  fullScreenBtn.addEventListener('click', toggleFullScreen);
+
+  window.setVolume = function (value) {
+    if (player && typeof player.setVolume === 'function') {
+      player.setVolume(value); // Set the player volume to the new value
+    }
+  };
+
+  // Update video progress when the user interacts with the videoBar
+  videoBar.addEventListener('mousedown', () => {
+    isUserInteracting = true; // Pause syncing when the user starts interacting
+  });
+
+  videoBar.addEventListener('input', () => {
+    if (player && typeof player.seekTo === 'function') {
+      const newTime = videoBar.value;
+      player.seekTo(newTime, true); // Seek to the new time using the global `player`
+    }
+  });
+
+  videoBar.addEventListener('mouseup', () => {
+    isUserInteracting = false; // Resume syncing when the user stops interacting
+  });
+
+  videoBar.addEventListener('touchstart', () => {
+    isUserInteracting = true; // Pause syncing for touch interaction
+  });
+
+  videoBar.addEventListener('touchend', () => {
+    isUserInteracting = false; // Resume syncing after touch interaction
+  });
+
+  playPauseIcon.addEventListener('click', () => {
+    if (isPlaying) {
+      manualPause = true;
+      playPauseIcon.classList.remove('fa-pause');
+      playPauseIcon.classList.add('fa-play');
+      player.pauseVideo();
+    } else {
+      manualPause = false;
+      playPauseIcon.classList.remove('fa-play');
+      playPauseIcon.classList.add('fa-pause');
+      player.playVideo();
+    }
+    isPlaying = !isPlaying;
+  });
+
+  videoPlayer.addEventListener('click', () => {
+    console.log("ges")
+    if (manualPause) {
+      e.preventDefault();
+      console.log("pause")
+      return; // Prevent any action if video is manually paused
+    }
+  });
 }
 
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    videoPlayerContainer.requestFullscreen?.();
+    fullScreenBtn.textContent = 'Exit full screen';
+  } else {
+    document.exitFullscreen?.();
+    fullScreenBtn.textContent = 'Full screen';
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) {
+    overlay.style.position = 'fixed';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+  } else {
+    overlay.style.position = 'absolute';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+  }
+});
+
+const playbackSpeedMenu = document.getElementById('playbackSpeed-menu');
+function populatePlaybackSpeedMenu() {
+  const availableSpeeds = player.getAvailablePlaybackRates(); // Get available playback rates
+
+  // Clear the existing menu
+  playbackSpeedMenu.innerHTML = '';
+
+  // Populate menu with available playback speeds
+  availableSpeeds.forEach((speed) => {
+    const speedItem = document.createElement('li');
+    speedItem.textContent = `${speed}x`; // Set the speed text (e.g., '1x', '1.5x')
+    speedItem.addEventListener('click', () => {
+      setPlaybackSpeed(speed); // Add click event to set speed
+    });
+    playbackSpeedMenu.appendChild(speedItem);
+  });
+}
+
+// Function to set playback speed
+function setPlaybackSpeed(speed) {
+  if (player && typeof player.setPlaybackRate === 'function') {
+    player.setPlaybackRate(speed); // Set the playback speed
+    console.log(`Playback speed set to: ${speed}`);
+  }
+}
 
