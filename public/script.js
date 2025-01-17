@@ -14,7 +14,7 @@ const videoGrid = document.getElementById("displayvideocalls");
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
-let player;
+let player; let isPlaying;
 searchbar.disabled = true; 
 
 // Function to extract room ID from URL
