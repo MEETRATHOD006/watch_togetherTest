@@ -15,6 +15,16 @@ const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
 let player; let isPlaying;
+
+const videoPlayer = document.getElementById('videoPlayer');
+const videoBar = document.getElementById('videoBar');
+const playPauseIcon = document.getElementById('playPauseIcon');
+const fullScreenBtn = document.getElementById('fullScreen');
+const videoContainer = document.getElementById('video-container');
+const videoPlayerContainer = document.getElementById('videoPlayer').parentElement;
+const overlay = document.createElement('div'); // Create an overlay to intercept clicks
+const playbackSpeedMenu = document.getElementById('playbackSpeed-menu');
+
 searchbar.disabled = true; 
 
 // Function to extract room ID from URL
@@ -412,14 +422,6 @@ function displaySuggestions(items) {
 }
 
 // Load YouTube video in the iframe
-const videoPlayer = document.getElementById('videoPlayer');
-const videoBar = document.getElementById('videoBar');
-const playPauseIcon = document.getElementById('playPauseIcon');
-const fullScreenBtn = document.getElementById('fullScreen');
-const videoContainer = document.getElementById('video-container');
-const videoPlayerContainer = document.getElementById('videoPlayer').parentElement;
-const overlay = document.createElement('div'); // Create an overlay to intercept clicks
-
 function loadVideo(videoId) {
   const volumeBar = document.getElementById('volumeBar');
   overlay.style.position = 'absolute';
@@ -562,7 +564,6 @@ document.addEventListener('fullscreenchange', () => {
   }
 });
 
-const playbackSpeedMenu = document.getElementById('playbackSpeed-menu');
 function populatePlaybackSpeedMenu() {
   const availableSpeeds = player.getAvailablePlaybackRates(); // Get available playback rates
 
