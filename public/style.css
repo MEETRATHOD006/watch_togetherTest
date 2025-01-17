@@ -223,6 +223,7 @@ header {
 #video{
     width: 100%;
     height: 90%;
+    position: relative;
     /* border: 1px solid blue; */
 }
 
@@ -237,6 +238,7 @@ header {
     padding-left: 10px;
     outline: none;
     font-size: 15px;
+    z-index: 99;
 
 }
 #suggestions {
@@ -259,7 +261,7 @@ header {
     display: none;
 }
   
-  #suggestions li {
+#suggestions li {
     padding: 10px;
     cursor: pointer;
     display: flex;
@@ -267,10 +269,150 @@ header {
     gap: 10px;
   }
 
-  .video-title {
+.video-title {
     margin-top: 10px;
   }
   
-  #suggestions li:hover {
+#suggestions li:hover {
     background-color: rgb(30 39 51);
   }
+
+#custom-controls {
+    position: absolute;
+    z-index: 9999;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - 10px);
+    height: 60px;
+    text-align: left;
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+#videoBar {
+    width: 90%;
+}
+
+#setting {
+    list-style: none;
+    font-size: 10px;
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    background-color: #000000;
+    justify-content: center;
+    padding-left: 0;
+    opacity: 0;
+    visibility: hidden;
+    border: 1px solid grey;
+}
+
+#setting > li {
+    padding: 10px;
+    width: 118px;
+    list-style: none;
+    text-align: center;
+}
+
+#setting > li:hover {
+    background-color: #303030;
+}
+
+li:hover #setting {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    bottom: 0px;
+    right: 0;
+}
+
+.fa-gear {
+    position: relative;
+}
+
+.fa-gear:hover #setting {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    bottom: 0px;
+    right: 0;
+    -webkit-transition: all .5s, background, 2s .5s linear;
+    transition: all .5s, background 2s .5s linear;
+}
+
+.fa-volume-high {
+    position: relative;
+}
+
+#volumeBar {
+    position: absolute;
+    transform: rotate(90deg);
+    right: -55px;
+    bottom: 72px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.fa-volume-high:hover #volumeBar{
+    opacity: 1;
+    visibility: visible;
+}
+
+#Quality {
+    position: relative;
+}
+
+#quality-menu {
+    position: absolute;
+    left: -393px;
+    top: -33px;
+    font-size: 12px;
+    border: 1px solid grey;
+    list-style: none;
+    list-style-type: none;
+    padding-left: 0px;
+    background-color: black;
+    opacity: 0;
+}
+
+#quality-menu > li {
+    padding: 10px;
+}
+#quality-menu > li:hover {
+    background-color: #303030;
+}
+
+#Quality:hover #quality-menu {
+    opacity: 1;
+}
+
+#playbackSpeed {
+    position: relative;
+}
+
+#playbackSpeed-menu {
+    list-style: none;
+    padding-left: 0px;
+    border: 1px solid grey;
+    position: absolute;
+    background-color: black;
+    left: -52px;
+    bottom: 0;
+    opacity: 0;
+}
+
+#playbackSpeed-menu > * {
+    padding: 10px;
+
+}
+#playbackSpeed-menu > *:hover {
+    background-color: #303030;
+}
+
+#playbackSpeed:hover #playbackSpeed-menu{
+    opacity: 1;
+}
