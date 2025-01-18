@@ -133,16 +133,23 @@ if (roomId) {
       individualsVideo.append(video);
     }
   }
-    // Event listener for the search bar
-    searchbar.addEventListener('input', async (e) => {
-      const query = e.target.value.trim();
-      if (query.length > 0) {
-        const results = await fetchSuggestions(query);
-        displaySuggestions(results);
-      } else {
-        suggestions.innerHTML = ''; // Clear suggestions when the input is empty
-      }
-    });
+  // Event listener for the search bar
+  searchbar.addEventListener('input', async (e) => {
+    const query = e.target.value.trim();
+    if (query.length > 0) {
+      const results = await fetchSuggestions(query);
+      displaySuggestions(results);
+    } else {
+      suggestions.innerHTML = ''; // Clear suggestions when the input is empty
+    }
+  });
+
+  // Listen for video-sync event to sync the video across users
+  socket.on('video-sync', (videoId) => {
+    console.log(`Syncing video for all users: ${videoId}`);
+    loadVideo(videoId); // Load the video for all users
+  });
+
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -403,7 +410,9 @@ function loadVideo(videoId) {
   overlay.style.background = 'transparent'; // Fully transparent overlay
   videoContainer.appendChild(overlay); // Add the overlay to the video container
 
-
+  // Emit to server to broadcast the video load event
+  socket.emit('video-loaded', { roomId, videoId });
+  
   // videoPlayer.document.close();
   if (player){
     player.g = null;
