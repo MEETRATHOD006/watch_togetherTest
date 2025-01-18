@@ -334,36 +334,6 @@ joinRoomButton.addEventListener("click", async () => {
   joinRoom(roomId, participantName); // Ensure implementation exists
   joinPopup.style.display = "none";
   joinRoomIdInput.value = "";
-
-    // if (data.message === "Joined room successfully") {
-    //   socket.emit("join_room", { room_id: roomId, participant_name: participantName });
-
-    //   // Listen for room_joined event
-    //   socket.on("room_joined", (serverResponse) => {
-    //     if (serverResponse.success) {
-    //       const createJoinBtnDiv = document.querySelector(".creatJoinBtn");
-    //       createJoinBtnDiv.innerHTML = `
-    //         <span id="roomIdDisplay">Room ID: ${roomId}</span>
-    //         <i class="fa-solid fa-copy" id="copyRoomId" style="cursor: pointer; color: yellow;"></i>
-    //       `;
-
-    //       document.getElementById("copyRoomId").addEventListener("click", () => {
-    //         navigator.clipboard.writeText(roomId).then(() => {
-    //           // Toast-style notification
-    //           const copyMessage = document.createElement("div");
-    //           copyMessage.textContent = "Room ID copied to clipboard!";
-    //           copyMessage.style.position = "fixed";
-    //           copyMessage.style.bottom = "20px";
-    //           copyMessage.style.right = "20px";
-    //           copyMessage.style.backgroundColor = "#4CAF50";
-    //           copyMessage.style.color = "#fff";
-    //           copyMessage.style.padding = "10px";
-    //           copyMessage.style.borderRadius = "5px";
-    //           document.body.appendChild(copyMessage);
-    //           setTimeout(() => copyMessage.remove(), 3000);
-    //         });
-    //       });
-
 });
 
 // 📌 Utility Function: Copy to Clipboard
