@@ -149,9 +149,7 @@ if (roomId) {
     if (currentVideoId === videoId) return;
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId); // Load the video for all users
-    if (player) {
-      player.seekTo(currentTime, true);  // Sync time when new user joins
-    }
+    player.seekTo(currentTime, true);  // Sync time when new user joins
   });
 
   // Handle pause/play events from the server
