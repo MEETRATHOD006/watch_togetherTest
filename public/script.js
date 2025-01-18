@@ -157,7 +157,6 @@ if (roomId) {
   socket.on('video-played', (data) => {
     if (data.roomId === roomId && player) {
       player.seekTo(data.currentTime, true); // Sync playback position
-      videoBar.value = data.currentTime;
       player.playVideo();
       isPlaying = true;
       playPauseIcon.classList.remove('fa-play');
@@ -169,7 +168,6 @@ if (roomId) {
   socket.on('video-paused', (data) => {
     if (data.roomId === roomId && player) {
       player.seekTo(data.currentTime, true);
-      videoBar.value = data.currentTime; // Sync progress bar
       player.pauseVideo();
       isPlaying = false;
       playPauseIcon.classList.remove('fa-pause');
@@ -181,7 +179,6 @@ if (roomId) {
   socket.on('video-seeked', (data) => {
     if (data.roomId === roomId && player) {
       player.seekTo(data.currentTime, true); // Sync seek across users
-      videoBar.value = data.currentTime; // Update video bar
     }
   });
 
