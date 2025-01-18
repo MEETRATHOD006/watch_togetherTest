@@ -22,6 +22,8 @@ pool.connect()
     process.exit(1);
   });
 
+const rooms = {}; // Stores room data including the current videoId
+
 // Create Room
 app.post("/create_room", async (req, res) => {
   const { room_id, room_name, admin_name } = req.body;
@@ -105,18 +107,32 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     io.to(roomId).emit('user-connected', userId);
     console.log(`User ${userId} joined room ${roomId}`);
+
+    // Check if the room has a currently playing video
+    if (rooms[roomId] && rooms[roomId].videoId) {
+      // If the room has a videoId, send it to the new user
+      socket.emit('video-sync', rooms[roomId].videoId);
+    }
     
     socket.on("disconnect", () => {
       io.to(roomId).emit('user-disconnected', userId)
       console.log("User disconnected:", socket.id);
     });
-
+  });
+  
     // Listen for video-loaded event and broadcast it
     socket.on('video-loaded', (data) => {
-      console.log(`Video loaded in room ${data.roomId}: ${data.videoId}`);
+      const { roomId, videoId } = data;
+  
+      // Store the videoId that is playing in the room
+      if (!rooms[roomId]) {
+        rooms[roomId] = {};
+      }
+      rooms[roomId].videoId = videoId;
+      
       socket.to(roomId).emit('video-sync', data.videoId); // Broadcast to other users in the room
+      console.log(`Video loaded in room ${data.roomId}: ${data.videoId}`);
     });
-  });
 });
 
 
