@@ -458,7 +458,7 @@ function loadVideo(videoId) {
   suggestions.innerHTML = '';
   let isUserInteracting = false; // Track if the user is interacting with the videoBar
   let syncInterval; // To store the interval ID
-
+  let isPauseEventSent = false;
   // Initialize the YouTube Player API
   player = new YT.Player(videoPlayer, {
     videoId: videoId,
@@ -487,9 +487,17 @@ function loadVideo(videoId) {
         }, 500); // Update every 500ms
       },
       onStateChange: (event) => {
-        
+        // Check for PAUSED state
         if (event.data === YT.PlayerState.PAUSED) {
-          socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
+          if (!isPauseEventSent) {  // Emit only once when the pause is detected
+            socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
+            isPauseEventSent = true;  // Prevent further emissions
+          }
+        }
+  
+        // Check for PLAYING state
+        if (event.data === YT.PlayerState.PLAYING) {
+          isPauseEventSent = false;  // Reset the flag when video is playing
         }
 
         if (event.data === YT.PlayerState.ENDED) {
