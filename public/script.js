@@ -150,18 +150,6 @@ if (roomId) {
     
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId); // Load the video for all users
-    
-    // Retry mechanism for seeking if player isn't ready yet
-    if (player && player.playVideo && player.getCurrentTime) {
-      console.log("Player is ready. Seeking...");
-      player.seekTo(currentTime, true); // Seek immediately if the player is ready
-    } else {
-      // Wait for player to be ready
-      player.addEventListener("onReady", function() {
-        console.log("Player is now ready. Seeking...");
-        player.seekTo(currentTime, true); // Seek after player is ready
-      });
-    }
   });
 
   // Handle pause/play events from the server
