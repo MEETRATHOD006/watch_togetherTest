@@ -154,34 +154,36 @@ if (roomId) {
 
   // Handle pause/play events from the server
   // Handle play event from server
-socket.on('video-played', (data) => {
-  if (data.roomId === roomId && player) {
-    player.seekTo(data.currentTime, true); // Sync playback position
-    player.playVideo();
-    isPlaying = true;
-    playPauseIcon.classList.remove('fa-play');
-    playPauseIcon.classList.add('fa-pause');
-  }
-});
-
-// Handle pause event from server
-socket.on('video-paused', (data) => {
-  if (data.roomId === roomId && player) {
-    player.pauseVideo();
-    videoBar.value = data.currentTime; // Sync progress bar
-    isPlaying = false;
-    playPauseIcon.classList.remove('fa-pause');
-    playPauseIcon.classList.add('fa-play');
-  }
-});
-
-// Handle seek event from server
-socket.on('video-seeked', (data) => {
-  if (data.roomId === roomId && player) {
-    player.seekTo(data.currentTime, true); // Sync seek across users
-    videoBar.value = data.currentTime; // Update video bar
-  }
-});
+  socket.on('video-played', (data) => {
+    if (data.roomId === roomId && player) {
+      player.playVideo();
+      player.seekTo(data.currentTime, true); // Sync playback position
+      videoBar.value = data.currentTime;
+      isPlaying = true;
+      playPauseIcon.classList.remove('fa-play');
+      playPauseIcon.classList.add('fa-pause');
+    }
+  });
+  
+  // Handle pause event from server
+  socket.on('video-paused', (data) => {
+    if (data.roomId === roomId && player) {
+      player.pauseVideo();
+      player.seekTo(data.currentTime, true);
+      videoBar.value = data.currentTime; // Sync progress bar
+      isPlaying = false;
+      playPauseIcon.classList.remove('fa-pause');
+      playPauseIcon.classList.add('fa-play');
+    }
+  });
+  
+  // Handle seek event from server
+  socket.on('video-seeked', (data) => {
+    if (data.roomId === roomId && player) {
+      player.seekTo(data.currentTime, true); // Sync seek across users
+      videoBar.value = data.currentTime; // Update video bar
+    }
+  });
 
   
 } else {
