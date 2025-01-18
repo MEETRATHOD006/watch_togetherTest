@@ -166,8 +166,7 @@ if (roomId) {
 
   // Handle pause/play events from the server
   socket.on('video-pause', (data) => {
-    if (data.roomId === roomId && player && player.playVideo) {
-      // manualPause = true; // Prevent recursive play/pause triggers
+    if (data.roomId === roomId && player) {
       player.pauseVideo();
       videoBar.value = data.currentTime; // Sync progress bar
       isPlaying = false;
@@ -177,8 +176,7 @@ if (roomId) {
   });
   
   socket.on('video-play', (data) => {
-    if (data.roomId === roomId && player && player.playVideo) {
-      // manualPause = false; // Prevent recursive play/pause triggers
+    if (data.roomId === roomId && player) {
       player.seekTo(data.currentTime, true); // Sync playback position
       player.playVideo();
       isPlaying = true;
@@ -465,7 +463,6 @@ function loadVideo(videoId) {
   }
   videoPlayer.src = `about:blank`;
   videoPlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
-  let manualPause = false;
   let isPlaying = true;
   suggestions.innerHTML = '';
   let isUserInteracting = false; // Track if the user is interacting with the videoBar
@@ -500,8 +497,8 @@ function loadVideo(videoId) {
       },
       onStateChange: (event) => {
         
-        if (event.data === YT.PlayerState.PAUSED && !manualPause) {
-          player.playVideo();
+        if (event.data === YT.PlayerState.PAUSED) {
+          
         }
 
         if (event.data === YT.PlayerState.ENDED) {
@@ -546,29 +543,18 @@ function loadVideo(videoId) {
   });
 
   playPauseIcon.addEventListener('click', () => {
-    if (isPlaying) {
-      manualPause = true;
+    if (YT.PlayerState.PLAYING) {
       playPauseIcon.classList.remove('fa-pause');
       playPauseIcon.classList.add('fa-play');
       player.pauseVideo();
       socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
     } else {
-      manualPause = false;
       playPauseIcon.classList.remove('fa-play');
       playPauseIcon.classList.add('fa-pause');
       player.playVideo();
       socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
     }
     isPlaying = !isPlaying;
-  });
-
-  videoPlayer.addEventListener('click', () => {
-    console.log("ges")
-    if (manualPause) {
-      e.preventDefault();
-      console.log("pause")
-      return; // Prevent any action if video is manually paused
-    }
   });
 }
 
