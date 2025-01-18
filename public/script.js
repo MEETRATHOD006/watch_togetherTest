@@ -145,7 +145,7 @@ if (roomId) {
   });
 
   // Listen for video-sync event to sync the video across users
-  socket.on('video-sync', (videoId) => {
+  socket.on('video-sync', (videoId, currentTime) => {
     if (currentVideoId === videoId) return;
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId); // Load the video for all users
