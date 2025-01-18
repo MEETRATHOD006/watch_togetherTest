@@ -491,15 +491,7 @@ function loadVideo(videoId) {
       onStateChange: (event) => {
         // Check for PAUSED state
         if (event.data === YT.PlayerState.PAUSED) {
-          if (!isPauseEventSent) {  // Emit only once when the pause is detected
             socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
-            isPauseEventSent = true;  // Prevent further emissions
-          }
-        }
-  
-        // Check for PLAYING state
-        if (event.data === YT.PlayerState.PLAYING) {
-          isPauseEventSent = false;  // Reset the flag when video is playing
         }
 
         if (event.data === YT.PlayerState.ENDED) {
