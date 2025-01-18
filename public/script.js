@@ -165,32 +165,36 @@ if (roomId) {
   });
 
   // Handle pause/play events from the server
-  socket.on('video-pause', (data) => {
-    if (data.roomId === roomId && player) {
-      player.pauseVideo();
-      videoBar.value = data.currentTime; // Sync progress bar
-      isPlaying = false;
-      playPauseIcon.classList.remove('fa-pause');
-      playPauseIcon.classList.add('fa-play');
-    }
-  });
-  
-  socket.on('video-play', (data) => {
-    if (data.roomId === roomId && player) {
-      player.seekTo(data.currentTime, true); // Sync playback position
-      player.playVideo();
-      isPlaying = true;
-      playPauseIcon.classList.remove('fa-play');
-      playPauseIcon.classList.add('fa-pause');
-    }
-  });
+  // Handle play event from server
+socket.on('video-played', (data) => {
+  if (data.roomId === roomId && player) {
+    player.seekTo(data.currentTime, true); // Sync playback position
+    player.playVideo();
+    isPlaying = true;
+    playPauseIcon.classList.remove('fa-play');
+    playPauseIcon.classList.add('fa-pause');
+  }
+});
 
-  socket.on('video-seek', (data) => {
-    if (data.roomId === roomId && player) {
-      player.seekTo(data.currentTime, true); // Sync seek across users
-      videoBar.value = data.currentTime; // Update video bar
-    }
-  });
+// Handle pause event from server
+socket.on('video-paused', (data) => {
+  if (data.roomId === roomId && player) {
+    player.pauseVideo();
+    videoBar.value = data.currentTime; // Sync progress bar
+    isPlaying = false;
+    playPauseIcon.classList.remove('fa-pause');
+    playPauseIcon.classList.add('fa-play');
+  }
+});
+
+// Handle seek event from server
+socket.on('video-seeked', (data) => {
+  if (data.roomId === roomId && player) {
+    player.seekTo(data.currentTime, true); // Sync seek across users
+    videoBar.value = data.currentTime; // Update video bar
+  }
+});
+
   
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
