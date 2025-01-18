@@ -101,6 +101,7 @@ io.on("connection", (socket) => {
   socket.on("create_room", (data) => {
     console.log("Room created:", data.room_id);
     socket.join(data.room_id);
+    rooms[data.room_id] = { videoId: null, currentTime: 0 };
   });
 
   socket.on("join-room", (roomId, userId) => {
@@ -108,10 +109,9 @@ io.on("connection", (socket) => {
     io.to(roomId).emit('user-connected', userId);
     console.log(`User ${userId} joined room ${roomId}`);
 
-    // Check if the room has a currently playing video
+    // Send current video and time if any
     if (rooms[roomId] && rooms[roomId].videoId) {
-      // If the room has a videoId, send it to the new user
-      socket.emit('video-sync', rooms[roomId].videoId);
+      socket.emit('video-sync', rooms[roomId].videoId, rooms[roomId].currentTime);
     }
     
     socket.on("disconnect", () => {
@@ -123,25 +123,27 @@ io.on("connection", (socket) => {
     // Listen for video-loaded event and broadcast it
     socket.on('video-loaded', (data) => {
       const { roomId, videoId } = data;
-  
-      // Store the videoId that is playing in the room
-      if (!rooms[roomId]) {
-        rooms[roomId] = {};
-      }
+      if (!rooms[roomId]) rooms[roomId] = {};
       rooms[roomId].videoId = videoId;
-      
-      socket.to(roomId).emit('video-sync', data.videoId); // Broadcast to other users in the room
-      console.log(`Video loaded in room ${data.roomId}: ${data.videoId}`);
+      socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime); // Send video sync to others
     });
 
     socket.on('video-play', (data) => {
-      console.log(`Video play in room ${data.roomId}: ${data.videoId}`);
-      socket.to(data.roomId).emit('video-play', data); // Broadcast to others
+      console.log(`Video play in room ${data.roomId}`);
+      io.to(data.roomId).emit('video-play', data);
+      rooms[data.roomId].currentTime = data.currentTime; // Store current time
+    });
+
+    socket.on('video-pause', (data) => {
+      console.log(`Video pause in room ${data.roomId}`);
+      io.to(data.roomId).emit('video-pause', data);
+      rooms[data.roomId].currentTime = data.currentTime; // Store current time
     });
     
-    socket.on('video-pause', (data) => {
-      console.log(`Video pause in room ${data.roomId}: ${data.videoId}`);
-      socket.to(data.roomId).emit('video-pause', data); // Broadcast to others
+    socket.on('video-seek', (data) => {
+      console.log(`Video seek in room ${data.roomId} to ${data.currentTime}`);
+      io.to(data.roomId).emit('video-seek', data);
+      rooms[data.roomId].currentTime = data.currentTime; // Store new current time
     });
 });
 
