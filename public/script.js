@@ -151,19 +151,29 @@ if (roomId) {
     loadVideo(videoId); // Load the video for all users
   });
 
-  socket.on('video-play', (videoId) => {
-    if (player.getVideoData().video_id === videoId) {
-      player.playVideo();
-    }
-  });
-
-  socket.on('video-pause', (videoId) => {
-    if (player.getVideoData().video_id === videoId) {
+  // Handle pause/play events from the server
+  socket.on('video-pause', (data) => {
+    if (data.roomId === roomId && player) {
+      manualPause = true; // Prevent recursive play/pause triggers
       player.pauseVideo();
+      videoBar.value = data.currentTime; // Sync progress bar
+      isPlaying = false;
+      playPauseIcon.classList.remove('fa-pause');
+      playPauseIcon.classList.add('fa-play');
     }
   });
-
-
+  
+  socket.on('video-play', (data) => {
+    if (data.roomId === roomId && player) {
+      manualPause = false; // Prevent recursive play/pause triggers
+      player.seekTo(data.currentTime, true); // Sync playback position
+      player.playVideo();
+      isPlaying = true;
+      playPauseIcon.classList.remove('fa-play');
+      playPauseIcon.classList.add('fa-pause');
+    }
+  });
+  
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
 }
@@ -518,13 +528,13 @@ function loadVideo(videoId) {
       playPauseIcon.classList.remove('fa-pause');
       playPauseIcon.classList.add('fa-play');
       player.pauseVideo();
-      socket.emit('video-pause', { roomId, videoId: player.getVideoData().video_id });
+      socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
     } else {
       manualPause = false;
       playPauseIcon.classList.remove('fa-play');
       playPauseIcon.classList.add('fa-pause');
       player.playVideo();
-      socket.emit('video-play', { roomId, videoId: player.getVideoData().video_id });
+      socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
     }
     isPlaying = !isPlaying;
   });
