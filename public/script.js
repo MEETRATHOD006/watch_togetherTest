@@ -400,6 +400,7 @@ function displaySuggestions(items) {
 
 // Load YouTube video in the iframe
 function loadVideo(videoId) {
+  if (videoLoaded) return;
   const volumeBar = document.getElementById('volumeBar');
   overlay.style.position = 'absolute';
   overlay.style.top = '0';
