@@ -33,7 +33,7 @@ header {
     display: none;
 }
 
-#popupButtons {
+.popupButtons {
     height: 40px;
     border-radius: 5px;
     border: none;
@@ -41,7 +41,7 @@ header {
     cursor: pointer;
 }
 
-#popupInput {
+.popupInput {
     background-color: rgb(54 86 123);
     outline: none;
     height: 30px;
