@@ -133,6 +133,16 @@ io.on("connection", (socket) => {
       socket.to(roomId).emit('video-sync', data.videoId); // Broadcast to other users in the room
       console.log(`Video loaded in room ${data.roomId}: ${data.videoId}`);
     });
+
+    socket.on('video-play', (data) => {
+      console.log(`Video play in room ${data.roomId}: ${data.videoId}`);
+      socket.to(data.roomId).emit('video-play', data.videoId); // Broadcast to others
+    });
+    
+    socket.on('video-pause', (data) => {
+      console.log(`Video pause in room ${data.roomId}: ${data.videoId}`);
+      socket.to(data.roomId).emit('video-pause', data.videoId); // Broadcast to others
+    });
 });
 
 
