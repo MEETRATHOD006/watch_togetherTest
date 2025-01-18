@@ -200,7 +200,7 @@ const closeCreateRoomPopupButton = document.getElementById("closeCreateRoomPopup
 
 // Show Room Creation Popup
 createRoomButton.addEventListener("click", () => {
-  createRoomPopup.style.display = "block"; // Show the popup
+  createRoomPopup.style.display = "grid"; // Show the popup
 });
 
 // Room Creation
@@ -287,7 +287,7 @@ const joinErrorText = document.getElementById("joinError");
 
 // Show Join Popup
 joinButton.addEventListener("click", () => {
-  joinPopup.style.display = "block";
+  joinPopup.style.display = "grid";
 });
 
 // Close Join Popup
