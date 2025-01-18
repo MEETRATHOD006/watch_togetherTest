@@ -14,7 +14,7 @@ const videoGrid = document.getElementById("displayvideocalls");
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
-let player; let isPlaying;
+let player; let isPlaying; let videoLoaded = false;
 
 const videoPlayer = document.getElementById('videoPlayer');
 const videoBar = document.getElementById('videoBar');
@@ -410,7 +410,10 @@ function loadVideo(videoId) {
   overlay.style.background = 'transparent'; // Fully transparent overlay
   videoContainer.appendChild(overlay); // Add the overlay to the video container
 
+  videoLoaded = true; // Mark the video as loaded
+  
   // Emit to server to broadcast the video load event
+  socket.emit('video-loaded', { roomId, videoId });
   
   // videoPlayer.document.close();
   if (player){
@@ -518,7 +521,6 @@ function loadVideo(videoId) {
       return; // Prevent any action if video is manually paused
     }
   });
-  socket.emit('video-loaded', { roomId, videoId });
 }
 
 function toggleFullScreen() {
