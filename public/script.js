@@ -151,11 +151,17 @@ if (roomId) {
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId); // Load the video for all users
     
-    if (player && typeof player.seekTo === 'function') {
-      player.seekTo(currentTime, true);
-    } else {
-      console.log("Player is not ready yet.");
-    }  // Sync time when new user joins
+    // Retry mechanism for seeking if player isn't ready yet
+    function trySeek() {
+      if (player && typeof player.seekTo === 'function') {
+        player.seekTo(currentTime, true);
+      } else {
+        console.log("Player is not ready yet. Retrying in 500ms...");
+        setTimeout(trySeek, 500);  // Retry after 500ms if player is not ready
+      }
+    }
+  
+    trySeek(); // Start the retry loop
   });
 
   // Handle pause/play events from the server
