@@ -37,16 +37,18 @@
 
     <!-- Room Name and Admin Name Popup -->
     <div id="createRoomPopup" style="display: none">
-      <div>
-        <label for="roomName">Room Name:</label>
-        <input type="text" id="roomName" required />
+      <div class="popup-content">
+        <div>
+          <label for="roomName">Room Name:</label>
+          <input type="text" id="roomName" required />
+        </div>
+        <div>
+          <label for="adminName">Admin Name:</label>
+          <input type="text" id="adminName" required />
+        </div>
+        <button id="createRoomConfirm">Create Room</button>
+        <button id="closeCreateRoomPopup">Cancel</button>
       </div>
-      <div>
-        <label for="adminName">Admin Name:</label>
-        <input type="text" id="adminName" required />
-      </div>
-      <button id="createRoomConfirm">Create Room</button>
-      <button id="closeCreateRoomPopup">Cancel</button>
     </div>
 
     <div class="mainContainder">
