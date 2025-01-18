@@ -140,7 +140,7 @@ io.on("connection", (socket) => {
       rooms[data.roomId].currentTime = data.currentTime; // Store current time
     });
     
-    socket.on('video-seek', (data) => {
+    socket.on('video-seek', (roomId, currentTime) => {
       console.log(`Video seek in room ${data.roomId} to ${data.currentTime}`);
       io.to(data.roomId).emit('video-seeked', data); // Emit video-seeked
       rooms[data.roomId].currentTime = data.currentTime; // Store new current time
