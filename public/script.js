@@ -519,8 +519,8 @@ function loadVideo(videoId) {
     if (player && typeof player.seekTo === 'function') {
       const newTime = videoBar.value;
       player.seekTo(newTime, true); // Seek to the new time using the global `player`
+      socket.emit('video-seek', { roomId, newTime});
     }
-    socket.emit('video-seek', { roomId, newTime});
   });
 
   videoBar.addEventListener('mouseup', () => {
