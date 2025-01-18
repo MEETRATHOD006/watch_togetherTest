@@ -131,19 +131,16 @@ io.on("connection", (socket) => {
     socket.on('video-play', (roomId, currentTime) => {
       console.log(`Video play in room ${roomId}`);
       io.to(roomId).emit('video-played', {roomId, currentTime}); // Emit video-played
-      rooms[roomId].currentTime = currentTime; // Store current time
     });
     
     socket.on('video-pause', (roomId, currentTime) => {
       console.log(`Video pause in room ${roomId}`);
       io.to(roomId).emit('video-paused', {roomId, currentTime}); // Emit video-paused
-      rooms[roomId].currentTime = currentTime; // Store current time
     });
     
     socket.on('video-seek', (roomId, currentTime) => {
       console.log(`Video seek in room ${roomId} to ${currentTime}`);
       io.to(roomId).emit('video-seeked', {roomId, currentTime}); // Emit video-seeked
-      rooms[roomId].currentTime = currentTime; // Store new current time
     });
 });
 
