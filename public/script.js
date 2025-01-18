@@ -490,7 +490,11 @@ function loadVideo(videoId) {
       onStateChange: (event) => {
         
         if (event.data === YT.PlayerState.PAUSED) {
-          
+          socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
+        }
+
+        if (event.data === YT.PlayerState.PLAYING) {
+          socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
         }
 
         if (event.data === YT.PlayerState.ENDED) {
@@ -539,12 +543,12 @@ function loadVideo(videoId) {
       playPauseIcon.classList.remove('fa-pause');
       playPauseIcon.classList.add('fa-play');
       player.pauseVideo();
-      socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
+      
     } else {
       playPauseIcon.classList.remove('fa-play');
       playPauseIcon.classList.add('fa-pause');
       player.playVideo();
-      socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
+      
     }
     isPlaying = !isPlaying;
   });
