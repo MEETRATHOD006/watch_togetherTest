@@ -14,7 +14,7 @@ const videoGrid = document.getElementById("displayvideocalls");
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
-let player; let isPlaying; let videoLoaded = false;
+let player; let isPlaying; let videoLoaded = false; let currentVideoId = null;
 
 const videoPlayer = document.getElementById('videoPlayer');
 const videoBar = document.getElementById('videoBar');
@@ -400,7 +400,7 @@ function displaySuggestions(items) {
 
 // Load YouTube video in the iframe
 function loadVideo(videoId) {
-  if (videoLoaded) return;
+  if (currentVideoId === videoId) return;
   const volumeBar = document.getElementById('volumeBar');
   overlay.style.position = 'absolute';
   overlay.style.top = '0';
@@ -411,7 +411,7 @@ function loadVideo(videoId) {
   overlay.style.background = 'transparent'; // Fully transparent overlay
   videoContainer.appendChild(overlay); // Add the overlay to the video container
 
-  videoLoaded = true; // Mark the video as loaded
+  currentVideoId = videoId; // Update to the new video ID
   
   // Emit to server to broadcast the video load event
   socket.emit('video-loaded', { roomId, videoId });
