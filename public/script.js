@@ -167,7 +167,7 @@ if (roomId) {
   // Handle pause/play events from the server
   socket.on('video-pause', (data) => {
     if (data.roomId === roomId && player && player.playVideo) {
-      manualPause = true; // Prevent recursive play/pause triggers
+      // manualPause = true; // Prevent recursive play/pause triggers
       player.pauseVideo();
       videoBar.value = data.currentTime; // Sync progress bar
       isPlaying = false;
@@ -178,7 +178,7 @@ if (roomId) {
   
   socket.on('video-play', (data) => {
     if (data.roomId === roomId && player && player.playVideo) {
-      manualPause = false; // Prevent recursive play/pause triggers
+      // manualPause = false; // Prevent recursive play/pause triggers
       player.seekTo(data.currentTime, true); // Sync playback position
       player.playVideo();
       isPlaying = true;
