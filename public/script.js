@@ -161,6 +161,7 @@ if (roomId) {
         console.log("Player is now ready. Seeking...");
         player.seekTo(currentTime, true); // Seek after player is ready
       });
+    }
   });
 
   // Handle pause/play events from the server
