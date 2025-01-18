@@ -156,7 +156,8 @@ if (roomId) {
   // Handle play event from server
   socket.on('video-played', (data) => {
     if (data.roomId === roomId && player) {
-      player.seekTo(data.currentTime, true); // Sync playback position
+      videoBar.value = data.currentTime;
+      // player.seekTo(data.currentTime, true); // Sync playback position
       player.playVideo();
       isPlaying = true;
       playPauseIcon.classList.remove('fa-play');
@@ -167,7 +168,8 @@ if (roomId) {
   // Handle pause event from server
   socket.on('video-paused', (data) => {
     if (data.roomId === roomId && player) {
-      player.seekTo(data.currentTime, true);
+      videoBar.value = data.currentTime;
+      // player.seekTo(data.currentTime, true);
       player.pauseVideo();
       isPlaying = false;
       playPauseIcon.classList.remove('fa-pause');
@@ -521,7 +523,7 @@ function loadVideo(videoId) {
     isUserInteracting = true; // Pause syncing when the user starts interacting
   });
 
-  videoBar.addEventListener('input', () => {
+  videoBar.addEventListener('change', () => {
     if (player && typeof player.seekTo === 'function') {
       const newTime = videoBar.value;
       player.seekTo(newTime, true); // Seek to the new time using the global `player`
