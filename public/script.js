@@ -152,16 +152,15 @@ if (roomId) {
     loadVideo(videoId); // Load the video for all users
     
     // Retry mechanism for seeking if player isn't ready yet
-    function trySeek() {
-      if (player && typeof player.seekTo === 'function') {
-        player.seekTo(currentTime, true);
-      } else {
-        console.log("Player is not ready yet. Retrying in 500ms...");
-        setTimeout(trySeek, 500);  // Retry after 500ms if player is not ready
-      }
-    }
-  
-    trySeek(); // Start the retry loop
+    if (player && player.playVideo && player.getCurrentTime) {
+      console.log("Player is ready. Seeking...");
+      player.seekTo(currentTime, true); // Seek immediately if the player is ready
+    } else {
+      // Wait for player to be ready
+      player.addEventListener("onReady", function() {
+        console.log("Player is now ready. Seeking...");
+        player.seekTo(currentTime, true); // Seek after player is ready
+      });
   });
 
   // Handle pause/play events from the server
