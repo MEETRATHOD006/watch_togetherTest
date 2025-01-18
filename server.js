@@ -102,17 +102,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join-room", (roomId, userId) => {
-    console.log("i am here to join_room");
     socket.join(roomId);
-    console.log("socket.join(room_id); done");
     io.to(roomId).emit('user-connected', userId);
-    console.log("socket.to(room_id).emit done");
     console.log(`User ${userId} joined room ${roomId}`);
-    console.log("done dana done");
     
     socket.on("disconnect", () => {
       io.to(roomId).emit('user-disconnected', userId)
       console.log("User disconnected:", socket.id);
+    });
+
+    // Listen for video-loaded event and broadcast it
+    socket.on('video-loaded', (data) => {
+      console.log(`Video loaded in room ${data.roomId}: ${data.videoId}`);
+      socket.to(roomId).emit('video-sync', data.videoId); // Broadcast to other users in the room
     });
   });
 });
