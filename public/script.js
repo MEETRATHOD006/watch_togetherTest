@@ -14,7 +14,7 @@ const videoGrid = document.getElementById("displayvideocalls");
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
-let player; let isPlaying; let videoLoaded = false; let currentVideoId = null;
+let player; let isPlaying; let videoLoaded = false; let currentVideoId = null; let currentVideoTime = 0;
 
 const videoPlayer = document.getElementById('videoPlayer');
 const videoBar = document.getElementById('videoBar');
@@ -149,6 +149,9 @@ if (roomId) {
     if (currentVideoId === videoId) return;
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId); // Load the video for all users
+    if (player) {
+      player.seekTo(currentTime, true);  // Sync time when new user joins
+    }
   });
 
   // Handle pause/play events from the server
@@ -171,6 +174,13 @@ if (roomId) {
       isPlaying = true;
       playPauseIcon.classList.remove('fa-play');
       playPauseIcon.classList.add('fa-pause');
+    }
+  });
+
+  socket.on('video-seek', (data) => {
+    if (data.roomId === roomId && player) {
+      player.seekTo(data.currentTime, true); // Sync seek across users
+      videoBar.value = data.currentTime; // Update video bar
     }
   });
   
@@ -462,6 +472,8 @@ function loadVideo(videoId) {
         // Sync the videoBar with the video's progress
         const duration = event.target.getDuration();
         videoBar.max = duration;
+        videoBar.value = 0; // Start at 0
+        currentVideoTime = 0;
         
         // Set the initial volume to 50%
         player.setVolume(50);
@@ -508,6 +520,7 @@ function loadVideo(videoId) {
       const newTime = videoBar.value;
       player.seekTo(newTime, true); // Seek to the new time using the global `player`
     }
+    socket.emit('video-seek', { roomId, newTime});
   });
 
   videoBar.addEventListener('mouseup', () => {
