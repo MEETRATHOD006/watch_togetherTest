@@ -411,7 +411,6 @@ function loadVideo(videoId) {
   videoContainer.appendChild(overlay); // Add the overlay to the video container
 
   // Emit to server to broadcast the video load event
-  socket.emit('video-loaded', { roomId, videoId });
   
   // videoPlayer.document.close();
   if (player){
@@ -519,6 +518,7 @@ function loadVideo(videoId) {
       return; // Prevent any action if video is manually paused
     }
   });
+  socket.emit('video-loaded', { roomId, videoId });
 }
 
 function toggleFullScreen() {
