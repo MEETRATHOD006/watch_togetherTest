@@ -156,9 +156,9 @@ if (roomId) {
   // Handle play event from server
   socket.on('video-played', (data) => {
     if (data.roomId === roomId && player) {
-      player.playVideo();
       player.seekTo(data.currentTime, true); // Sync playback position
       videoBar.value = data.currentTime;
+      player.playVideo();
       isPlaying = true;
       playPauseIcon.classList.remove('fa-play');
       playPauseIcon.classList.add('fa-pause');
@@ -168,9 +168,9 @@ if (roomId) {
   // Handle pause event from server
   socket.on('video-paused', (data) => {
     if (data.roomId === roomId && player) {
-      player.pauseVideo();
       player.seekTo(data.currentTime, true);
       videoBar.value = data.currentTime; // Sync progress bar
+      player.pauseVideo();
       isPlaying = false;
       playPauseIcon.classList.remove('fa-pause');
       playPauseIcon.classList.add('fa-play');
