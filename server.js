@@ -130,19 +130,19 @@ io.on("connection", (socket) => {
 
     socket.on('video-play', (data) => {
       console.log(`Video play in room ${data.roomId}`);
-      io.to(data.roomId).emit('video-play', data);
+      io.to(data.roomId).emit('video-played', data); // Emit video-played
       rooms[data.roomId].currentTime = data.currentTime; // Store current time
     });
-
+    
     socket.on('video-pause', (data) => {
       console.log(`Video pause in room ${data.roomId}`);
-      io.to(data.roomId).emit('video-pause', data);
+      io.to(data.roomId).emit('video-paused', data); // Emit video-paused
       rooms[data.roomId].currentTime = data.currentTime; // Store current time
     });
     
     socket.on('video-seek', (data) => {
       console.log(`Video seek in room ${data.roomId} to ${data.currentTime}`);
-      io.to(data.roomId).emit('video-seek', data);
+      io.to(data.roomId).emit('video-seeked', data); // Emit video-seeked
       rooms[data.roomId].currentTime = data.currentTime; // Store new current time
     });
 });
