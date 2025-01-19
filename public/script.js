@@ -163,6 +163,15 @@ if (roomId) {
     console.log(`seeked video to ${newTime}`)
   })
 
+  socket.on('video-paused', (roomId, currentTime) => {
+    player.pauseVideo();
+    player.seekTo(currentTime, true);
+  })
+
+  socket.on('video-played', (roomId, currentTime) => {
+    player.playVideo();
+    player.seekTo(currentTime, true);
+  })
   
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -472,15 +481,6 @@ function loadVideo(videoId) {
       onStateChange: (event) => {
         const currentState = event.data;
         
-        if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.PLAYING) {
-          socket.emit('video-state-changed', {
-            roomId,
-            videoId,
-            state: currentState,
-            currentTime: player.getCurrentTime(),
-          });
-        }
-        
         // Check for PAUSED state
         if (event.data === YT.PlayerState.ENDED) {
           clearInterval(syncInterval); // Stop syncing when the video ends
@@ -525,18 +525,21 @@ function loadVideo(videoId) {
 
   playPauseIcon.addEventListener('click', () => {
     if (player) {
-      if (isPlaying) {
+      if (YT.PlayerState.PLAYING) {
         playPauseIcon.classList.remove('fa-pause');
         playPauseIcon.classList.add('fa-play');
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
+        socket.emit('video-pause', {roomId, currentTime: player.getCurrentTime()});
         player.pauseVideo();
-      } else {
+      }
+      if (YT.PlayerState.PAUSED) {
         playPauseIcon.classList.remove('fa-play');
         playPauseIcon.classList.add('fa-pause');
         lastPlayerState = YT.PlayerState.PLAYING; // Update state manually
+        socket.emit('video-play', {roomId, currentTime: player.getCurrentTime()});
         player.playVideo();
       }
-      isPlaying = !isPlaying;
+      
     }
   });
 
