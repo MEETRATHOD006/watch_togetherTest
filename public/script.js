@@ -461,6 +461,7 @@ function loadVideo(videoId) {
   let isUserInteracting = false; // Track if the user is interacting with the videoBar
   let syncInterval; // To store the interval ID
   let isPauseEventSent = false;
+  let lastPlayerState = null;
   // Initialize the YouTube Player API
   player = new YT.Player(videoPlayer, {
     videoId: videoId,
