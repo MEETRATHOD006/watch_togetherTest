@@ -174,6 +174,13 @@ if (roomId) {
     player.seekTo(currentTime, true)
     console.log('played')
   })
+
+  socket.on('video-synced-time', (currentTime) => {
+    if (player && Math.abs(player.getCurrentTime() - currentTime) > 0.5) {  // Threshold of 0.5 seconds to avoid unnecessary seeks
+      player.seekTo(currentTime, true);
+      console.log(`Video synced to ${currentTime} seconds`);
+    }
+  });
   
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -477,6 +484,11 @@ function loadVideo(videoId) {
           if (!isUserInteracting && player && typeof player.getCurrentTime === 'function') {
             const currentTime = player.getCurrentTime();
             videoBar.value = currentTime;
+
+            socket.emit('video-sync-time', {
+              roomId,
+              currentTime: currentTime
+            });
           }
         }, 500); // Update every 500ms
       },
