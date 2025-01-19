@@ -129,19 +129,19 @@ io.on("connection", (socket) => {
     });
 
     socket.on('video-play', (data) => {
-      const { roomId, videoId } = data;
+      const { roomId, currentTime } = data;
       console.log(`Video play in room ${roomId}`);
       io.to(roomId).emit('video-played', {roomId, currentTime}); // Emit video-played
     });
     
     socket.on('video-pause', (data) => {
-      const { roomId, videoId } = data;
+      const { roomId, currentTime } = data;
       console.log(`Video pause in room ${roomId}`);
       io.to(roomId).emit('video-paused', {roomId, currentTime}); // Emit video-paused
     });
     
     socket.on('video-seek', (data) => {
-      const { roomId, videoId } = data;
+      const { roomId, currentTime } = data;
       console.log(`Video seek in room ${roomId} to ${currentTime}`);
       io.to(roomId).emit('video-seeked', {roomId, currentTime}); // Emit video-seeked
     });
