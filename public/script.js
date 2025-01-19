@@ -551,13 +551,13 @@ function loadVideo(videoId) {
       if (isPlaying) {
         playPauseIcon.classList.remove('fa-pause');
         playPauseIcon.classList.add('fa-play');
-        player.pauseVideo();
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
+        player.pauseVideo();
       } else {
         playPauseIcon.classList.remove('fa-play');
         playPauseIcon.classList.add('fa-pause');
-        player.playVideo();
         lastPlayerState = YT.PlayerState.PLAYING; // Update state manually
+        player.playVideo();
         socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
       }
       isPlaying = !isPlaying;
