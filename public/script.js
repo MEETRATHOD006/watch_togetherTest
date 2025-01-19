@@ -489,6 +489,20 @@ function loadVideo(videoId) {
         }, 500); // Update every 500ms
       },
       onStateChange: (event) => {
+        const currentState = event.data;
+
+        // Handle PAUSED state
+        if (currentState === YT.PlayerState.PAUSED && lastPlayerState !== YT.PlayerState.PAUSED) {
+          lastPlayerState = YT.PlayerState.PAUSED; // Update last player state
+          socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
+        }
+  
+        // Handle PLAYING state
+        if (currentState === YT.PlayerState.PLAYING && lastPlayerState !== YT.PlayerState.PLAYING) {
+          lastPlayerState = YT.PlayerState.PLAYING; // Update last player state
+          socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
+        }
+        
         // Check for PAUSED state
         if (event.data === YT.PlayerState.ENDED) {
           clearInterval(syncInterval); // Stop syncing when the video ends
@@ -532,21 +546,23 @@ function loadVideo(videoId) {
   });
 
   playPauseIcon.addEventListener('click', () => {
-    if (YT.PlayerState.PLAYING) {
-      playPauseIcon.classList.remove('fa-pause');
-      playPauseIcon.classList.add('fa-play');
-      player.pauseVideo();
-      socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
-      
+    if (player) {
+      if (isPlaying) {
+        playPauseIcon.classList.remove('fa-pause');
+        playPauseIcon.classList.add('fa-play');
+        player.pauseVideo();
+        lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
+      } else {
+        playPauseIcon.classList.remove('fa-play');
+        playPauseIcon.classList.add('fa-pause');
+        player.playVideo();
+        lastPlayerState = YT.PlayerState.PLAYING; // Update state manually
+        socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
+      }
+      isPlaying = !isPlaying;
     }
-    if (YT.PlayerState.PAUSED){
-      playPauseIcon.classList.remove('fa-play');
-      playPauseIcon.classList.add('fa-pause');
-      player.playVideo();
-      socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
-    }
-    isPlaying = !isPlaying;
   });
+
 }
 
 function toggleFullScreen() {
