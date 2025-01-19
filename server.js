@@ -128,23 +128,22 @@ io.on("connection", (socket) => {
       socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime); // Send video sync to others
     });
 
-    socket.on('video-play', (data) => {
-      const { roomId, currentTime } = data;
-      console.log(`Video play in room ${roomId}`);
-      io.to(roomId).emit('video-played', {roomId, currentTime}); // Emit video-played
+    socket.on('video-loaded', (data) => {
+      const { roomId, videoId, currentVideoTime } = data;
+      rooms[roomId] = { videoId, currentTime: currentVideoTime };
+      socket.to(roomId).emit('video-loaded', { videoId, currentVideoTime });
     });
-    
-    socket.on('video-pause', (data) => {
-      const { roomId, currentTime } = data;
-      console.log(`Video pause in room ${roomId}`);
-      io.to(roomId).emit('video-paused', {roomId, currentTime}); // Emit video-paused
+
+    socket.on('video-state-changed', (data) => {
+      const { roomId, videoId, state, currentTime } = data;
+      io.to(roomId).emit('video-state-changed', { videoId, state, currentTime });
     });
-    
-    socket.on('video-seek', (data) => {
-      const { roomId, currentTime } = data;
-      console.log(`Video seek in room ${roomId} to ${currentTime}`);
-      io.to(roomId).emit('video-seeked', {roomId, currentTime}); // Emit video-seeked
+
+    socket.on('sync-video', (data) => {
+      const { roomId, videoId, currentTime, isPlaying } = data;
+      io.to(roomId).emit('sync-video', { videoId, currentTime, isPlaying });
     });
+
 });
 
 
