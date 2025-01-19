@@ -165,10 +165,12 @@ if (roomId) {
 
   socket.on('video-paused', (roomId, currentTime) => {
     player.pauseVideo();
+    console.log('paused')
   })
 
   socket.on('video-played', (roomId, currentTime) => {
     player.playVideo();
+    console.log('played')
   })
   
 } else {
@@ -528,12 +530,14 @@ function loadVideo(videoId) {
         playPauseIcon.classList.add('fa-play');
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
         socket.emit('video-pause', {roomId, currentTime: player.getCurrentTime()});
+        console.log('pause emite')
         player.pauseVideo();
       } else {
         playPauseIcon.classList.remove('fa-play');
         playPauseIcon.classList.add('fa-pause');
         lastPlayerState = YT.PlayerState.PLAYING; // Update state manually
         socket.emit('video-play', {roomId, currentTime: player.getCurrentTime()});
+        console.log('playe emite')
         player.playVideo();
       }
       
