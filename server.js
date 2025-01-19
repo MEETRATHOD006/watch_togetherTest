@@ -120,45 +120,43 @@ io.on("connection", (socket) => {
     });
   });
   
-    // Listen for video-loaded event and broadcast it
+    // Store the current video state for each room
     socket.on('video-loaded', (data) => {
       const { roomId, videoId } = data;
       if (!rooms[roomId]) rooms[roomId] = {};
+      
       rooms[roomId].videoId = videoId;
-      socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime); // Send video sync to others
+      rooms[roomId].currentTime = 0;
+      rooms[roomId].isPlaying = false;
+      socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime, rooms[roomId].isPlaying);
     });
-
-    socket.on('video-seek', (data) => {
-      const roomId = data.roomId;
-      const videoBarValue = data.videoBarValue;
-      socket.to(roomId).emit('video-seeked', roomId, videoBarValue);
-    })
-
-    socket.on('video-pause', (data) => {
-      console.log('video-pause here')
-      const roomId = data.roomId;
-      const currentTime = data.currentTime;
-      socket.to(roomId).emit('video-paused', roomId, currentTime);
-      console.log('video-paused emit')
-    })
-
-    socket.on('video-play', (data) => {
-      console.log("video-play")
-      const roomId = data.roomId;
-      const currentTime = data.currentTime;
-      socket.to(roomId).emit('video-played', roomId, currentTime);
-      console.log("video-played emit")
-    })
-
-    socket.on('video-sync-time', (data) => {
-      const { roomId, currentTime } = data;
-      // Store the current time in the room
-      if (!rooms[roomId]) rooms[roomId] = {};
-      rooms[roomId].currentTime = currentTime;
     
-      // Broadcast the current time to other users
-      socket.to(roomId).emit('video-synced-time', currentTime);
+    socket.on('video-seek', (data) => {
+      const { roomId, videoBarValue } = data;
+      if (!rooms[roomId]) return;
+    
+      rooms[roomId].currentTime = videoBarValue;
+      socket.to(roomId).emit('video-seeked', roomId, videoBarValue);
     });
+    
+    socket.on('video-pause', (data) => {
+      const { roomId, currentTime } = data;
+      if (!rooms[roomId]) return;
+    
+      rooms[roomId].isPlaying = false;
+      rooms[roomId].currentTime = currentTime;
+      socket.to(roomId).emit('video-paused', roomId, currentTime);
+    });
+    
+    socket.on('video-play', (data) => {
+      const { roomId, currentTime } = data;
+      if (!rooms[roomId]) return;
+    
+      rooms[roomId].isPlaying = true;
+      rooms[roomId].currentTime = currentTime;
+      socket.to(roomId).emit('video-played', roomId, currentTime);
+    });
+
 
 });
 
