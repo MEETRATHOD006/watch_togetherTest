@@ -150,6 +150,16 @@ io.on("connection", (socket) => {
       console.log("video-played emit")
     })
 
+    socket.on('video-sync-time', (data) => {
+      const { roomId, currentTime } = data;
+      // Store the current time in the room
+      if (!rooms[roomId]) rooms[roomId] = {};
+      rooms[roomId].currentTime = currentTime;
+    
+      // Broadcast the current time to other users
+      socket.to(roomId).emit('video-synced-time', currentTime);
+    });
+
 });
 
 
