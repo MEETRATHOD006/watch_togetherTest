@@ -165,7 +165,6 @@ if (roomId) {
 
   socket.on('video-paused', (roomId, currentTime) => {
     player.pauseVideo();
-    player.seekTo(currentTime, true);
   })
 
   socket.on('video-played', (roomId, currentTime) => {
