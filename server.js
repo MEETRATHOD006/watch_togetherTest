@@ -128,19 +128,19 @@ io.on("connection", (socket) => {
       socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime); // Send video sync to others
     });
 
-    socket.on('video-play', (roomId, currentTime) => {
+    socket.on('video-play', (data) => {
       console.log(`Video play in room ${roomId}`);
-      io.to(roomId).emit('video-played', {roomId, currentTime}); // Emit video-played
+      io.to(data.roomId).emit('video-played', {data.roomId, data.currentTime}); // Emit video-played
     });
     
-    socket.on('video-pause', (roomId, currentTime) => {
-      console.log(`Video pause in room ${roomId}`);
-      io.to(roomId).emit('video-paused', {roomId, currentTime}); // Emit video-paused
+    socket.on('video-pause', (data) => {
+      console.log(`Video pause in room ${data.roomId}`);
+      io.to(data.roomId).emit('video-paused', {data.roomId, data.currentTime}); // Emit video-paused
     });
     
-    socket.on('video-seek', (roomId, currentTime) => {
-      console.log(`Video seek in room ${roomId} to ${currentTime}`);
-      io.to(roomId).emit('video-seeked', {roomId, currentTime}); // Emit video-seeked
+    socket.on('video-seek', (data) => {
+      console.log(`Video seek in room ${data.roomId} to ${data.currentTime}`);
+      io.to(data.roomId).emit('video-seeked', {data.roomId, data.currentTime}); // Emit video-seeked
     });
 });
 
