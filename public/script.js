@@ -14,7 +14,9 @@ const videoGrid = document.getElementById("displayvideocalls");
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
-let player; let isPlaying; let videoLoaded = false; let currentVideoId = null; let currentVideoTime = 0; let videoloadedready = false;
+let player; let isPlaying; let videoLoaded = false; let currentVideoId = null;
+let currentVideoTime = 0; let videoloadedready = false; let lastSentTime = 0;
+const DEBOUNCE_TIME = 300;
 
 const videoPlayer = document.getElementById('videoPlayer');
 const videoBar = document.getElementById('videoBar');
@@ -145,44 +147,39 @@ if (roomId) {
   });
 
   // Listen for video-sync event to sync the video across users
-  socket.on('video-sync', (videoId, currentTime)=>{
+  socket.on('video-sync', (videoId, currentTime, isPlaying) => {
     if (currentVideoId === videoId) return;  // Don't reload if the video is already the same
   
     console.log(`Syncing video for all users: ${videoId}`);
-    if (!videoloadedready) {
-      loadVideo(videoId);
+    loadVideo(videoId);
+    
+    if (isPlaying) {
+      player.playVideo();
+    } else {
+      player.pauseVideo();
     }
-    if (videoloadedready) {
-      player.seekTo(currentTime, true);
-    }
-  })
-
+  
+    player.seekTo(currentTime, true); // Sync video position
+  });
+  
   socket.on('video-seeked', (roomId, videoBarValue) => {
     const newTime = videoBarValue;
     player.seekTo(newTime, true);
-    console.log(`seeked video to ${newTime}`)
-  })
-
+    console.log(`Seeked video to ${newTime}`);
+  });
+  
   socket.on('video-paused', (roomId, currentTime) => {
     player.pauseVideo();
-    player.seekTo(currentTime, true)
-    console.log('paused')
-  })
-
+    player.seekTo(currentTime, true);
+    console.log('Video paused');
+  });
+  
   socket.on('video-played', (roomId, currentTime) => {
     player.playVideo();
-    player.seekTo(currentTime, true)
-    console.log('played')
-  })
-
-  // Listen for video sync events and adjust time
-  socket.on('video-synced-time', (currentTime) => {
-    if (player && Math.abs(player.getCurrentTime() - currentTime) > 0.5) {
-      // Only seek if the time difference is significant
-      player.seekTo(currentTime, true);
-      console.log(`Video synced to ${currentTime} seconds`);
-    }
+    player.seekTo(currentTime, true);
+    console.log('Video played');
   });
+
   
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -486,13 +483,6 @@ function loadVideo(videoId) {
           if (!isUserInteracting && player && typeof player.getCurrentTime === 'function') {
             const currentTime = player.getCurrentTime();
             videoBar.value = currentTime;
-
-            if (Math.abs(currentTime - rooms[roomId]?.currentTime) > 0.5) {
-              socket.emit('video-sync-time', {
-                roomId,
-                currentTime: currentTime
-              });
-            }
           }
         }, 500); // Update every 500ms
       },
@@ -524,8 +514,10 @@ function loadVideo(videoId) {
   videoBar.addEventListener('change', () => {
     if (player && typeof player.seekTo === 'function') {
       const newTime = videoBar.value;
-      player.seekTo(newTime, true); // Seek to the new time using the global `player`
-      socket.emit('video-seek', {roomId, videoBarValue: videoBar.value})
+      if (Math.abs(newTime - lastSentTime) > 1) {
+        lastSentTime = newTime; // Update last sent time
+        socket.emit('video-seek', { roomId, videoBarValue: newTime });
+      }
     }
   });
 
