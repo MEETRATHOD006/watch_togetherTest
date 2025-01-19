@@ -157,6 +157,12 @@ if (roomId) {
     }
   })
 
+  socket.on('video-seeked', (roomId, videoBarValue) => {
+    const newTime = videoBarValue;
+    player.seekTo(newTime, true);
+    console.log(`seeked video to ${newTime}`)
+  })
+
   
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -501,6 +507,7 @@ function loadVideo(videoId) {
     if (player && typeof player.seekTo === 'function') {
       const newTime = videoBar.value;
       player.seekTo(newTime, true); // Seek to the new time using the global `player`
+      socket.emit('video-seek', {roomId, videoBarValue: videoBar.value})
     }
   });
 
