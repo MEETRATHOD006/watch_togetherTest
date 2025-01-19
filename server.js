@@ -135,15 +135,19 @@ io.on("connection", (socket) => {
     })
 
     socket.on('video-pause', (data) => {
+      console.log('video-pause here')
       const roomId = data.roomId;
       const currentTime = data.currentTime;
       socket.to(roomId).emit('video-paused', roomId, currentTime);
+      console.log('video-paused emit')
     })
 
     socket.on('video-play', (data) => {
+      console.log("video-play")
       const roomId = data.roomId;
       const currentTime = data.currentTime;
       socket.to(roomId).emit('video-played', roomId, currentTime);
+      console.log("video-played emit")
     })
 
 });
