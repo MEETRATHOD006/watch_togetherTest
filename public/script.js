@@ -84,6 +84,14 @@ if (roomId) {
         connectToNewUser(userId, stream);
       }
       displayNotification(`${userId} has joined the room.`);
+      if (currentVideoId) {
+        socket.emit('sync-video', { 
+          roomId, 
+          videoId: currentVideoId, 
+          currentTime: currentVideoTime,
+          isPlaying: isPlaying
+        });
+      }
     });
   })
 
@@ -145,44 +153,6 @@ if (roomId) {
   });
 
   // Listen for video-sync event to sync the video across users
-  socket.on('video-sync', (videoId, currentTime) => {
-    if (currentVideoId === videoId) return;
-    
-    console.log(`Syncing video for all users: ${videoId}`);
-    loadVideo(videoId); // Load the video for all users
-  });
-
-  // Handle pause/play events from the server
-  // Handle play event from server
-  socket.on('video-played', (data) => {
-    if (player) {
-      player.seekTo(data.currentTime, true); // Sync playback position
-      videoBar.value = data.currentTime;
-      player.playVideo();
-      isPlaying = true;
-      playPauseIcon.classList.remove('fa-play');
-      playPauseIcon.classList.add('fa-pause');
-    }
-  });
-  
-  // Handle pause event from server
-  socket.on('video-paused', (data) => {
-    if (player) {
-      player.seekTo(data.currentTime, true);
-      videoBar.value = data.currentTime;
-      player.pauseVideo();
-      isPlaying = false;
-      playPauseIcon.classList.remove('fa-pause');
-      playPauseIcon.classList.add('fa-play');
-    }
-  });
-  
-  // Handle seek event from server
-  socket.on('video-seeked', (data) => {
-    if (player) {
-      player.seekTo(data.currentTime, true); // Sync seek across users
-    }
-  });
 
   
 } else {
@@ -491,8 +461,15 @@ function loadVideo(videoId) {
       },
       onStateChange: (event) => {
         const currentState = event.data;
-
         
+        if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.PLAYING) {
+          socket.emit('video-state-changed', {
+            roomId,
+            videoId,
+            state: currentState,
+            currentTime: player.getCurrentTime(),
+          });
+        }
         
         // Check for PAUSED state
         if (event.data === YT.PlayerState.ENDED) {
@@ -520,7 +497,6 @@ function loadVideo(videoId) {
     if (player && typeof player.seekTo === 'function') {
       const newTime = videoBar.value;
       player.seekTo(newTime, true); // Seek to the new time using the global `player`
-      socket.emit('video-seek', { roomId, newTime});
     }
   });
 
@@ -543,13 +519,11 @@ function loadVideo(videoId) {
         playPauseIcon.classList.add('fa-play');
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
         player.pauseVideo();
-        socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
       } else {
         playPauseIcon.classList.remove('fa-play');
         playPauseIcon.classList.add('fa-pause');
         lastPlayerState = YT.PlayerState.PLAYING; // Update state manually
         player.playVideo();
-        socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
       }
       isPlaying = !isPlaying;
     }
