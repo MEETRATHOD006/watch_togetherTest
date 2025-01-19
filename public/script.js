@@ -553,6 +553,7 @@ function loadVideo(videoId) {
         playPauseIcon.classList.add('fa-play');
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
         player.pauseVideo();
+        socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
       } else {
         playPauseIcon.classList.remove('fa-play');
         playPauseIcon.classList.add('fa-pause');
