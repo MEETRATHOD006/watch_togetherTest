@@ -525,7 +525,7 @@ function loadVideo(videoId) {
 
   playPauseIcon.addEventListener('click', () => {
     if (player) {
-      if (YT.PlayerState.PLAYING) {
+      if player.getPlayerState() === 1) {
         playPauseIcon.classList.remove('fa-pause');
         playPauseIcon.classList.add('fa-play');
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
