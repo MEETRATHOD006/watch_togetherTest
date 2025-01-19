@@ -492,17 +492,7 @@ function loadVideo(videoId) {
       onStateChange: (event) => {
         const currentState = event.data;
 
-        // Handle PAUSED state
-        if (currentState === YT.PlayerState.PAUSED && lastPlayerState !== YT.PlayerState.PAUSED) {
-          lastPlayerState = YT.PlayerState.PAUSED; // Update last player state
-          socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
-        }
-  
-        // Handle PLAYING state
-        if (currentState === YT.PlayerState.PLAYING && lastPlayerState !== YT.PlayerState.PLAYING) {
-          lastPlayerState = YT.PlayerState.PLAYING; // Update last player state
-          socket.emit('video-play', { roomId, currentTime: player.getCurrentTime() });
-        }
+        
         
         // Check for PAUSED state
         if (event.data === YT.PlayerState.ENDED) {
