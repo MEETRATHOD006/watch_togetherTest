@@ -152,14 +152,6 @@ if (roomId) {
   
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId);
-    
-    if (isPlaying) {
-      player.playVideo();
-    } else {
-      player.pauseVideo();
-    }
-  
-    player.seekTo(currentTime, true); // Sync video position
   });
   
   socket.on('video-seeked', (roomId, videoBarValue) => {
@@ -516,6 +508,7 @@ function loadVideo(videoId) {
       const newTime = videoBar.value;
       if (Math.abs(newTime - lastSentTime) > 1) {
         lastSentTime = newTime; // Update last sent time
+        player.seekTo(newTime, true);
         socket.emit('video-seek', { roomId, videoBarValue: newTime });
       }
     }
