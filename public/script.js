@@ -490,10 +490,6 @@ function loadVideo(videoId) {
       },
       onStateChange: (event) => {
         // Check for PAUSED state
-        if (event.data === YT.PlayerState.PAUSED) {
-            socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
-        }
-
         if (event.data === YT.PlayerState.ENDED) {
           clearInterval(syncInterval); // Stop syncing when the video ends
         }
@@ -540,6 +536,7 @@ function loadVideo(videoId) {
       playPauseIcon.classList.remove('fa-pause');
       playPauseIcon.classList.add('fa-play');
       player.pauseVideo();
+      socket.emit('video-pause', { roomId, currentTime: player.getCurrentTime() });
       
     }
     if (YT.PlayerState.PAUSED){
