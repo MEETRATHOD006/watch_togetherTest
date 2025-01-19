@@ -169,7 +169,6 @@ if (roomId) {
 
   socket.on('video-played', (roomId, currentTime) => {
     player.playVideo();
-    player.seekTo(currentTime, true);
   })
   
 } else {
