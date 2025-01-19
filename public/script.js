@@ -14,7 +14,7 @@ const videoGrid = document.getElementById("displayvideocalls");
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
 const searchbar = document.getElementById('searchbar');
 const suggestions = document.getElementById('suggestions');
-let player; let isPlaying; let videoLoaded = false; let currentVideoId = null; let currentVideoTime = 0;
+let player; let isPlaying; let videoLoaded = false; let currentVideoId = null; let currentVideoTime = 0; let videoloadedready = false;
 
 const videoPlayer = document.getElementById('videoPlayer');
 const videoBar = document.getElementById('videoBar');
@@ -84,14 +84,6 @@ if (roomId) {
         connectToNewUser(userId, stream);
       }
       displayNotification(`${userId} has joined the room.`);
-      if (currentVideoId) {
-        socket.emit('sync-video', { 
-          roomId, 
-          videoId: currentVideoId, 
-          currentTime: currentVideoTime,
-          isPlaying: isPlaying
-        });
-      }
     });
   })
 
@@ -153,6 +145,17 @@ if (roomId) {
   });
 
   // Listen for video-sync event to sync the video across users
+  socket.on('video-sync', (videoId, currentTime)=>{
+    if (currentVideoId === videoId) return;  // Don't reload if the video is already the same
+  
+    console.log(`Syncing video for all users: ${videoId}`);
+    if (!videoloadedready) {
+      loadVideo(videoId);
+    }
+    if (videoloadedready) {
+      player.seekTo(currentTime, true);
+    }
+  })
 
   
 } else {
@@ -432,6 +435,7 @@ function loadVideo(videoId) {
   let syncInterval; // To store the interval ID
   let isPauseEventSent = false;
   let lastPlayerState = null;
+  let videoloadedready = true;
   // Initialize the YouTube Player API
   player = new YT.Player(videoPlayer, {
     videoId: videoId,
