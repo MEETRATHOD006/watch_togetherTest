@@ -131,7 +131,19 @@ io.on("connection", (socket) => {
     socket.on('video-seek', (data) => {
       const roomId = data.roomId;
       const videoBarValue = data.videoBarValue;
-      socket.to(roomId).emit('video-seeked', roomId, videoBarValue)
+      socket.to(roomId).emit('video-seeked', roomId, videoBarValue);
+    })
+
+    socket.on('video-pause', (data) => {
+      const roomId = data.roomId;
+      const currentTime = data.currentTime;
+      socket.to(roomId).emit('video-paused', roomId, currentTime);
+    })
+
+    socket.on('video-play', (data) => {
+      const roomId = data.roomId;
+      const currentTime = data.currentTime;
+      socket.to(roomId).emit('video-played', roomId, currentTime);
     })
 
 });
