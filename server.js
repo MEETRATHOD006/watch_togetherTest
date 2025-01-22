@@ -136,7 +136,7 @@ io.on("connection", (socket) => {
       if (!rooms[roomId]) return;
     
       rooms[roomId].currentTime = videoBarValue;
-      socket.to(roomId).emit('video-seeked', roomId, videoBarValue);
+      socket.broadcast.to(roomId).emit('video-seeked', roomId, videoBarValue);
     });
     
     socket.on('video-pause', (data) => {
@@ -145,7 +145,7 @@ io.on("connection", (socket) => {
     
       rooms[roomId].isPlaying = false;
       rooms[roomId].currentTime = currentTime;
-      socket.to(roomId).emit('video-paused', roomId, currentTime);
+      socket.broadcast.to(roomId).emit('video-paused', roomId, currentTime);
     });
     
     socket.on('video-play', (data) => {
@@ -154,7 +154,7 @@ io.on("connection", (socket) => {
     
       rooms[roomId].isPlaying = true;
       rooms[roomId].currentTime = currentTime;
-      socket.to(roomId).emit('video-played', roomId, currentTime);
+      socket.broadcast.to(roomId).emit('video-played', roomId, currentTime);
     });
 
 
